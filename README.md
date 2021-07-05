@@ -150,4 +150,4 @@ merge는 github에서 진행합니다.
 | 박정무 | 강한희 |
 |:---:|:---------:|
 |   | <img src="https://user-images.githubusercontent.com/68781598/124511973-4d254d80-de12-11eb-96b8-60741367d22a.png" width="200px" />  |
-| [qkrwjdan]](https://github.com/qkrwjdan) | [kanghanhee](https://github.com/kanghanhee) |
+| [qkrwjdan](https://github.com/qkrwjdan) | [kanghanhee](https://github.com/kanghanhee) |
