@@ -7,7 +7,7 @@
 - **SOPT 28th APPJAM, TAKE US**
 - 프로젝트 기간: 2021.06.26 ~ 2021.07.17
 
-[IA 링크](https://www.notion.so/IA-23e83fa5fd2b46538d7eb34aa7012c8b#843cbf401107443d987127f56bde6a8a)
+![IA](https://www.notion.so/IA-23e83fa5fd2b46538d7eb34aa7012c8b#843cbf401107443d987127f56bde6a8a.png)
 
 # 🛠 개발 환경
 
