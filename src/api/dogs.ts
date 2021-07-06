@@ -25,7 +25,7 @@ router.get("/", async (req: Request, res: Response) => {
  */
  router.get("/count", async (req: Request, res: Response) => {
   try {
-    const dogs = await Dog.count();
+    const dogs = await Dog.find({status:"wating"}).count();
     res.json(dogs);
   } catch (error) {
     console.error(error.message);
