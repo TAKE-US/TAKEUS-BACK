@@ -5,7 +5,7 @@ const router = Router();
 
 /**
  *  @route GET api/airports/country
- *  @desc Get aiports of the country
+ *  @desc Get airports of the country
  *  @access Public
  */
 router.get("/country", async (req: Request, res: Response) => {
