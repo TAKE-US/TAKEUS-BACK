@@ -11,7 +11,12 @@ const router = Router();
 router.get("/", async (req: Request, res: Response) => {
   try {
     const dogs = await Dog.find();
-    res.json(dogs);
+    const totalNum = dogs.length;
+    console.log(totalNum);
+
+    const response = { data: dogs, totalNum: totalNum };
+
+    res.json(response);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
