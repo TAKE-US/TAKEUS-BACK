@@ -1,12 +1,15 @@
 import express from "express";
-import connectDB from "./Loader/db";
-
 const app = express();
+import connectDB from "./Loader/db";
 
 // Connect Database
 connectDB();
 
+app.use(express.urlencoded());
 app.use(express.json());
+
+// Define Routes
+app.use("/api/dogs", require("./api/dogs"));
 
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
