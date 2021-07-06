@@ -11,22 +11,12 @@ const router = Router();
 router.get("/", async (req: Request, res: Response) => {
   try {
     const dogs = await Dog.find();
-    res.json(dogs);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server Error");
-  }
-});
+    const totalNum = dogs.length;
+    console.log(totalNum);
 
-/**
- *  @route GET api/dogs/count
- *  @desc Get all dogs
- *  @access Public
- */
- router.get("/count", async (req: Request, res: Response) => {
-  try {
-    const dogs = await Dog.find({status:"wating"}).count();
-    res.json(dogs);
+    const response = { data: dogs, totalNum: totalNum };
+
+    res.json(response);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
