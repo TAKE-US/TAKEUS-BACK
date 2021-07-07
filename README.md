@@ -15,7 +15,7 @@
 
 # 📧API 명세서
 
-[API 명세서 링크](https://www.notion.so/API-a47fdf00011f47f19bf5824218de841a)
+[API 명세서 링크](https://www.notion.so/TAKEUS-API-c0b92720012c48ad85c1314cd1ae3fae)
 
 ## :wrench: Architecture
 
