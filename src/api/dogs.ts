@@ -3,6 +3,7 @@ import multer from "multer";
 
 import { imageFilter, cleanFolder } from "../utils/filter";
 import Dog from "../models/Dog";
+import { IDogInputDTO } from "../interfaces/IDog";
 
 const router = Router();
 const UPLOAD_PATH = "uploads";
@@ -53,12 +54,78 @@ router.get("/detail/:dogId", async (req: Request, res: Response) => {
  *  @access Public
  */
 router.post("/", upload.array("photos", 5), async (req, res) => {
+
+  const {
+    endingCountry,
+    endingAirport,
+    name,
+    gender,
+    age,
+    weight,
+    neutralization,
+    health,
+    isInstitution,
+    institutionName,
+    kakaotalkId,
+    phoneNumber,
+    instagram,
+    twitter,
+    facebook,
+    detail,
+  } = req.body;
+
+  let dogFields: IDogInputDTO = {
+    /*
+    need to input user.id
+    user: user.id,
+    */
+  };
+
+  if (endingCountry) dogFields.endingCountry = endingCountry;
+  if (endingAirport) dogFields.endingAirport = endingAirport;
+  if (name) dogFields.name = name;
+  if (gender) dogFields.gender = gender;
+  if (age) dogFields.age = age;
+  if (weight) dogFields.weight = weight;
+  if (neutralization) dogFields.neutralization = neutralization;
+  if (health) dogFields.health = health;
+  if (isInstitution) dogFields.isInstitution = isInstitution;
+  if (institutionName) dogFields.institutionName = institutionName;
+  if (kakaotalkId) dogFields.kakaotalkId = kakaotalkId;
+  if (phoneNumber) dogFields.phoneNumber = phoneNumber;
+  if (instagram) dogFields.instagram = instagram;
+  if (twitter) dogFields.twitter = twitter;
+  if (facebook) dogFields.facebook = facebook;
+  if (detail) dogFields.detail = detail;
+ 
   try {
-    console.log(req.body);
-    console.log(req.files);
-    res.json("Hello");
+    // let dog = await dog.findOne({ user: user.id });
+    let dog = null;
+    if (dog) {
+      // dog = await dog.findOneAndUpdate(
+      //   { user: user.id },
+      //   { registerDate: Date.now()},
+      //   { $set: { value: dogFields } },
+      //   { new: true }
+      // );
+
+      // return res.json(profile);
+    }
+
+    // Create
+    dog = new Dog(dogFields);
+
+    dog.registerDate = Date.now();
+    dog.status = "waiting";
+    
+    await dog.save();
+    
+    cleanFolder(`${UPLOAD_PATH}/`);
+    
+    res.json(dog);
   } catch (err) {
-    res.sendStatus(400);
+    console.error(err.message);
+    res.status(500).send("Server Error.");
   }
 });
 
