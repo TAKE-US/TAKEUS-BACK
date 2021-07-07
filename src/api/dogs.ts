@@ -24,12 +24,22 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  *  @route GET api/dogs/search/:endingAirport
- *  @desc Get all dogs filterd by airport (오래된순)
+ *  @desc Get all dogs filterd by airport
  *  @access Public
  */
  router.get("/search/:endingAirport", async (req: Request, res: Response) => {
   try {
-    const searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'wating' }).sort('registerDate');
+    const query = req.query;
+    let searchedDog;
+    if (query.order === 'oldest') {
+      //오래된순
+      //GET /api/dogs/search/:endingAirport?order=oldest
+      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'wating' }).sort('registerDate');
+    } else if (query.order === 'latest') {
+      //최신순
+      //GET /api/dogs/search/:endingAirport?order=latest
+      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'wating' }).sort({ registerDate: -1 });
+    }
 
     res.json(searchedDog);
   } catch (error) {
