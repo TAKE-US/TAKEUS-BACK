@@ -1,7 +1,12 @@
 import { Router, Request, Response } from "express";
+import multer from "multer";
+
+import { imageFilter, cleanFolder } from '../utils/filter';
 import Dog from "../models/Dog";
 
 const router = Router();
+const UPLOAD_PATH = 'uploads';
+const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
 
 /**
  *  @route GET api/dogs
@@ -42,5 +47,21 @@ router.get("/", async (req: Request, res: Response) => {
     res.status(500).send("Server Error");
   }
 });
+
+/**
+ *  @route POST api/dogs
+ *  @desc Create one dog
+ *  @access Public
+ */
+router.post('/', upload.array("photos",5), async (req, res) => {
+  try {
+    console.log(req.body);
+    console.log(req.files);
+    res.json("Hello");
+  } catch (err) {
+      res.sendStatus(400);
+  }
+})
+
 
 module.exports = router;
