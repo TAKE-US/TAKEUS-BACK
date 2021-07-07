@@ -7,8 +7,6 @@
 - **SOPT 28th APPJAM, TAKE US**
 - 프로젝트 기간: 2021.06.26 ~ 2021.07.17
 
-![IA](https://www.notion.so/IA-23e83fa5fd2b46538d7eb34aa7012c8b#843cbf401107443d987127f56bde6a8a.png)
-
 # 🛠 개발 환경
 
 ![img](https://img.shields.io/badge/typescript-4.3.4-blue)
@@ -18,10 +16,38 @@
 
 [API 명세서 링크](https://www.notion.so/API-a47fdf00011f47f19bf5824218de841a)
 
+## :wrench: Architecture
+
+![Architecture 이미지](https://user-images.githubusercontent.com/68781598/124697754-543b8100-df22-11eb-9d33-fcc07c29372a.jpg)
+
 ## ⚙️ Dependencies
 
 ```json
-
+{
+  "name": "takeus-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src",
+    "build": "tsc && node dist"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/mongoose": "^5.11.97",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2",
+    "yarn": "^1.22.10"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.12",
+    "@types/node": "^16.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
+  }
+}
 ```
 
 # 📜 Coding Convention
@@ -210,5 +236,5 @@ git pull origin develop
 # :paw_prints: Developers
 | 박정무 | 강한희 |
 |:---:|:---------:|
-|   | <img src="https://user-images.githubusercontent.com/68781598/124511973-4d254d80-de12-11eb-96b8-60741367d22a.png" width="200px" />  |
+| <img src="https://user-images.githubusercontent.com/68781598/124697830-78975d80-df22-11eb-9300-63366ede33b0.png" width="200px" />  | <img src="https://user-images.githubusercontent.com/68781598/124511973-4d254d80-de12-11eb-96b8-60741367d22a.png" width="200px" />  |
 | [qkrwjdan](https://github.com/qkrwjdan) | [kanghanhee](https://github.com/kanghanhee) |
