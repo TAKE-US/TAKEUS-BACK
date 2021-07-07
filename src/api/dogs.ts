@@ -10,7 +10,7 @@ const router = Router();
  */
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const dogs = await Dog.find().sort('registerDate');
+    const dogs = await Dog.find({status:'wating'}).sort('registerDate');
     const totalNum = dogs.length;
 
     const response = { data: dogs, totalNum: totalNum };
