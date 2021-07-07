@@ -9,8 +9,9 @@
 
 # 🛠 개발 환경
 
-![img](https://img.shields.io/badge/typescript-4.3.4-blue)
+![img](https://img.shields.io/badge/typescript-4.3.5-blue)
 ![img](https://img.shields.io/badge/ts--node-10.0.0-green)
+![img](https://img.shields.io/badge/Mongoose-5.13.2-yellowgreen)
 
 # 📧API 명세서
 
