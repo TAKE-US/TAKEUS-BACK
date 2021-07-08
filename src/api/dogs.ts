@@ -63,20 +63,22 @@ router.get("/detail/:dogId", async (req: Request, res: Response) => {
  router.get("/search/:endingAirport", async (req: Request, res: Response) => {
   try {
     const query = req.query;
-    let searchedDog;
+    let order;
     if (query.order === 'latest') {
       /**
       * 최신순
       * GET /api/dogs/search/:endingAirport?order=latest
       */
-      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort({ registerDate: -1 });
+      order = -1;
     } else {
       /**
       * 오래된순
       * GET /api/dogs/search/:endingAirport?order=oldest
       */
-      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort('registerDate');
+     order = 1;
     }
+
+    const searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort({ registerDate: order });
 
     res.json(searchedDog);
   } catch (error) {
