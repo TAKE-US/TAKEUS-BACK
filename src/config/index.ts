@@ -17,4 +17,11 @@ export default {
    * That long string from mlab
    */
   mongoURI: process.env.MONGODB_URI,
+  
+  /**
+   * aws access key for image upload to s3
+   */
+  awsAccessKey: process.env.AWS_ACCESS_KEY,
+  awsPrivateAcessKey: process.env.AWS_PRIVATE_ACCESS_KEY,
+
 };

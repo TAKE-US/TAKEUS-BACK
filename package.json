@@ -4,7 +4,7 @@
   "description": "![img](<https://user-images.githubusercontent.com/68781598/124507888-bc4a7400-de09-11eb-9476-149ac4ac613d.PNG>)",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src",
+    "dev": "nodemon --config nodemon.json src/index.ts",
     "build": "tsc && node dist"
   },
   "repository": {
@@ -18,9 +18,16 @@
   },
   "homepage": "https://github.com/TAKE-US/TAKEUS-BACK#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.20.0",
+    "@aws-sdk/types": "^3.20.0",
+    "@types/multer": "^1.4.7",
+    "aws-sdk": "^2.941.0",
+    "del": "^6.0.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "mongoose": "^5.13.2",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.9",
     "yarn": "^1.22.10"
   },
   "devDependencies": {

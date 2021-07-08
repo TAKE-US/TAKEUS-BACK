@@ -39,7 +39,7 @@ const DogSchema = new mongoose.Schema({
   isInstitution: {
     type: Boolean,
   },
-  institution: {
+  institutionName: {
     type: String,
   },
   status: {
