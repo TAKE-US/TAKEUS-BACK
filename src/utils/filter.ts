@@ -10,7 +10,7 @@ const imageFilter = function (req, file, cb) {
 
 const cleanFolder = function (folderPath) {
   // delete files inside folder but not the folder itself
-  del.sync([`${folderPath}/**`, `!${folderPath}`]);
+  del.sync([`${folderPath}/*`]);
 };
 
 export { imageFilter, cleanFolder };

@@ -1,11 +1,15 @@
 import { Router, Request, Response } from "express";
 import multer from "multer";
 
-import { imageFilter, cleanFolder } from "../utils/filter";
 import Dog from "../models/Dog";
 import { IDogInputDTO } from "../interfaces/IDog";
 
+import { imageFilter, cleanFolder } from "../utils/filter";
+import aws from "../middleware/aws";
+
 const router = Router();
+
+// things for file upload.
 const UPLOAD_PATH = "uploads";
 const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
 
@@ -53,7 +57,7 @@ router.get("/detail/:dogId", async (req: Request, res: Response) => {
  *  @desc Create one dog
  *  @access Public
  */
-router.post("/", upload.array("photos", 5), async (req, res) => {
+router.post("/", upload.array("photos", 5), aws.imageUploadToS3, async (req, res) => {
 
   const {
     endingCountry,
@@ -72,6 +76,7 @@ router.post("/", upload.array("photos", 5), async (req, res) => {
     twitter,
     facebook,
     detail,
+    photos,
   } = req.body;
 
   let dogFields: IDogInputDTO = {
@@ -97,6 +102,7 @@ router.post("/", upload.array("photos", 5), async (req, res) => {
   if (twitter) dogFields.twitter = twitter;
   if (facebook) dogFields.facebook = facebook;
   if (detail) dogFields.detail = detail;
+  if (photos) dogFields.photos = photos;
  
   try {
     // let dog = await dog.findOne({ user: user.id });
