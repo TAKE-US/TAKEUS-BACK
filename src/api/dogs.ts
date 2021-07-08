@@ -79,8 +79,9 @@ router.get("/detail/:dogId", async (req: Request, res: Response) => {
     }
 
     const searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort({ registerDate: order });
+    const totalNum = searchedDog.length;
 
-    res.json(searchedDog);
+    res.json({ success: "true", data: { searchedDog: searchedDog }, totalNum: totalNum });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
