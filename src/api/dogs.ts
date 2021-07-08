@@ -20,13 +20,25 @@ const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
  */
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const { tmp, page, postNumInPage } = req.query;
+    console.log(tmp);
+    console.log(page);
+    console.log(postNumInPage);
 
-    const dogs = await Dog.find({ status: 'waiting' }).sort('registerDate');
+    const query = req.query;
+    let order = 1;
+
+    let orderMap = { 'latest' : -1, 'oldest': 1, undefined: 1 };
+
+    if (query.order === 'latest'){
+      order = -1;
+    }
+
+    const dogs = await Dog.find({ status: 'waiting' }).sort({ registerDate: order });
     const totalNum = dogs.length;
 
     const response = { data: dogs, totalNum: totalNum };
-
-    res.json(response);
+    res.status(200).json(response);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -35,7 +47,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  *  @route GET api/dogs/detail/:dogId
- *  @desc Get one dog with matching id.
+ *  @desc Get one dog with matching id. order by date
  *  @access Public
  */
 router.get("/detail/:dogId", async (req: Request, res: Response) => {
@@ -48,7 +60,6 @@ router.get("/detail/:dogId", async (req: Request, res: Response) => {
 
     const response = { data: dog };
     res.status(200).json(response);
-    
     } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -63,22 +74,17 @@ router.get("/detail/:dogId", async (req: Request, res: Response) => {
  router.get("/search/:endingAirport", async (req: Request, res: Response) => {
   try {
     const query = req.query;
-    let searchedDog;
-    if (query.order === 'latest') {
-      /**
-      * 최신순
-      * GET /api/dogs/search/:endingAirport?order=latest
-      */
-      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort({ registerDate: -1 });
-    } else {
-      /**
-      * 오래된순
-      * GET /api/dogs/search/:endingAirport?order=oldest
-      */
-      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort('registerDate');
+    let order = 1;
+
+    if (query.order === 'latest'){
+      order = -1;
     }
 
-    res.json(searchedDog);
+    const searchedDogs = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort({ registerDate: order });
+    const totalNum = searchedDogs.length;
+
+    const response = { data: searchedDogs, totalNum: totalNum };
+    res.status(200).json(response);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -161,7 +167,7 @@ router.post("/", upload.array("photos", 5), aws.imageUploadToS3, async (req, res
     
     cleanFolder(`${UPLOAD_PATH}/`);
     
-    res.json(dog);
+    res.status(200).json(dog);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error.");
