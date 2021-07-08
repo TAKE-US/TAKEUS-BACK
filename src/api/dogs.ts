@@ -31,14 +31,14 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     const query = req.query;
     let searchedDog;
-    if (query.order === 'oldest') {
-      //오래된순
-      //GET /api/dogs/search/:endingAirport?order=oldest
-      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'wating' }).sort('registerDate');
-    } else if (query.order === 'latest') {
+    if (query.order === 'latest') {
       //최신순
       //GET /api/dogs/search/:endingAirport?order=latest
       searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'wating' }).sort({ registerDate: -1 });
+    } else {
+      //오래된순
+      //GET /api/dogs/search/:endingAirport?order=oldest
+      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'wating' }).sort('registerDate');
     }
 
     res.json(searchedDog);
