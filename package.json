@@ -4,16 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src",
+    "dev": "nodemon --config nodemon.json src/index.ts",
     "build": "tsc && node dist"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "@types/mongoose": "^5.11.97",
+=======
+    "@types/multer": "^1.4.7",
+    "del": "^6.0.0",
+>>>>>>> 67489b31eb047314a442020cc7171d4d2d7d3620
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "mongoose": "^5.13.2",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.9",
     "yarn": "^1.22.10"
   },
   "devDependencies": {
