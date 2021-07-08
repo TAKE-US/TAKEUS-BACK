@@ -11,7 +11,7 @@ aws.config.update({
 
 const s3 = new aws.S3();
 
-function async_upload(req, file) {
+function asyncUpload(req, file) {
   return new Promise((resolve, reject) => {
 
     const params = {
@@ -37,7 +37,7 @@ function async_upload(req, file) {
 }
 
 async function uploadParallel(req, next) {
-  const promises = req.files.map((file) => async_upload(req, file));
+  const promises = req.files.map((file) => asyncUpload(req, file));
   await Promise.all(promises);
   next();
 }
