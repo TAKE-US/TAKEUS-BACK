@@ -21,7 +21,7 @@ const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
 router.get("/", async (req: Request, res: Response) => {
   try {
 
-    const dogs = await Dog.find({ status: 'wating' }).sort('registerDate');
+    const dogs = await Dog.find({ status: 'waiting' }).sort('registerDate');
     const totalNum = dogs.length;
 
     const response = { data: dogs, totalNum: totalNum };
@@ -69,13 +69,13 @@ router.get("/detail/:dogId", async (req: Request, res: Response) => {
       * 최신순
       * GET /api/dogs/search/:endingAirport?order=latest
       */
-      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'wating' }).sort({ registerDate: -1 });
+      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort({ registerDate: -1 });
     } else {
       /**
       * 오래된순
       * GET /api/dogs/search/:endingAirport?order=oldest
       */
-      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'wating' }).sort('registerDate');
+      searchedDog = await Dog.find({ endingAirport: req.params.endingAirport, status: 'waiting' }).sort('registerDate');
     }
 
     res.json(searchedDog);
