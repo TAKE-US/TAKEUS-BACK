@@ -1,13 +1,7 @@
 import { Router, Request, Response } from "express";
-import multer from "multer";
-
-import { imageFilter, cleanFolder } from "../utils/filter";
 import Dog from "../models/Dog";
-import { IDogInputDTO } from "../interfaces/IDog";
 
 const router = Router();
-const UPLOAD_PATH = "uploads";
-const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
 
 /**
  *  @route GET api/dogs
@@ -16,120 +10,15 @@ const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
  */
 router.get("/", async (req: Request, res: Response) => {
   try {
-<<<<<<< HEAD
     const dogs = await Dog.find({status:'wating'}).sort('registerDate');
-=======
-    const dogs = await Dog.find().sort("registerDate");
->>>>>>> 67489b31eb047314a442020cc7171d4d2d7d3620
     const totalNum = dogs.length;
 
     const response = { data: dogs, totalNum: totalNum };
+
     res.json(response);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
-  }
-});
-
-/**
- *  @route GET api/dogs/detail/:dogId
- *  @desc Get one dog with matching id.
- *  @access Public
- */
-router.get("/detail/:dogId", async (req: Request, res: Response) => {
-  try {
-    const dogId = req.params.dogId;
-    const dog = await Dog.findOne({ _id: dogId });
-
-    if (!dog)
-      return res.status(400).json({ status: 400, msg: "Dog not found" });
-
-    const response = { data: dog };
-    res.status(200).json(response);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server Error");
-  }
-});
-
-/**
- *  @route POST api/dogs
- *  @desc Create one dog
- *  @access Public
- */
-router.post("/", upload.array("photos", 5), async (req, res) => {
-
-  const {
-    endingCountry,
-    endingAirport,
-    name,
-    gender,
-    age,
-    weight,
-    neutralization,
-    health,
-    isInstitution,
-    institutionName,
-    kakaotalkId,
-    phoneNumber,
-    instagram,
-    twitter,
-    facebook,
-    detail,
-  } = req.body;
-
-  let dogFields: IDogInputDTO = {
-    /*
-    need to input user.id
-    user: user.id,
-    */
-  };
-
-  if (endingCountry) dogFields.endingCountry = endingCountry;
-  if (endingAirport) dogFields.endingAirport = endingAirport;
-  if (name) dogFields.name = name;
-  if (gender) dogFields.gender = gender;
-  if (age) dogFields.age = age;
-  if (weight) dogFields.weight = weight;
-  if (neutralization) dogFields.neutralization = neutralization;
-  if (health) dogFields.health = health;
-  if (isInstitution) dogFields.isInstitution = isInstitution;
-  if (institutionName) dogFields.institutionName = institutionName;
-  if (kakaotalkId) dogFields.kakaotalkId = kakaotalkId;
-  if (phoneNumber) dogFields.phoneNumber = phoneNumber;
-  if (instagram) dogFields.instagram = instagram;
-  if (twitter) dogFields.twitter = twitter;
-  if (facebook) dogFields.facebook = facebook;
-  if (detail) dogFields.detail = detail;
- 
-  try {
-    // let dog = await dog.findOne({ user: user.id });
-    let dog = null;
-    if (dog) {
-      // dog = await dog.findOneAndUpdate(
-      //   { user: user.id },
-      //   { registerDate: Date.now()},
-      //   { $set: { value: dogFields } },
-      //   { new: true }
-      // );
-
-      // return res.json(profile);
-    }
-
-    // Create
-    dog = new Dog(dogFields);
-
-    dog.registerDate = Date.now();
-    dog.status = "waiting";
-    
-    await dog.save();
-    
-    cleanFolder(`${UPLOAD_PATH}/`);
-    
-    res.json(dog);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error.");
   }
 });
 
