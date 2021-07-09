@@ -98,6 +98,7 @@ router.get("/search/:endingAirport", async (req: Request, res: Response) => {
     const response = { data: dogs, totalNum: totalNum };
 
     res.status(200).json(response);
+
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
