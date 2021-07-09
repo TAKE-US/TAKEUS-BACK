@@ -8,6 +8,7 @@ import { imageFilter, cleanFolder } from "../utils/filter";
 import { calculateSKipAndLimit } from "../utils/paging";
 
 import aws from "../middleware/aws";
+import auth from "../middleware/auth";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.get("/", async (req: Request, res: Response) => {
       page as any as number,
       postNumInPage as any as number
     );
-    
+
     const dogs = await Dog.find({ status: "waiting" })
       .sort({ registerDate: orderHash[order] })
       .skip(skip)
@@ -106,11 +107,12 @@ router.get("/search/:endingAirport", async (req: Request, res: Response) => {
 /**
  *  @route POST api/dogs
  *  @desc Create one dog
- *  @access Public
+ *  @access Private
  */
 router.post(
   "/",
   upload.array("photos", 5),
+  auth,
   aws.imageUploadToS3,
   async (req, res) => {
     const {
@@ -131,13 +133,11 @@ router.post(
       facebook,
       detail,
       photos,
+      user,
     } = req.body;
 
     let dogFields: IDogInputDTO = {
-      /*
-    need to input user.id
-    user: user.id,
-    */
+      user: user.id,
     };
 
     if (endingCountry) dogFields.endingCountry = endingCountry;
@@ -159,24 +159,8 @@ router.post(
     if (photos) dogFields.photos = photos;
 
     try {
-      // let dog = await dog.findOne({ user: user.id });
-      let dog = null;
-      if (dog) {
-        // dog = await dog.findOneAndUpdate(
-        //   { user: user.id },
-        //   { registerDate: Date.now()},
-        //   { $set: { value: dogFields } },
-        //   { new: true }
-        // );
-        // return res.json(profile);
-      }
-
       // Create
-      dog = new Dog(dogFields);
-
-      dog.registerDate = Date.now();
-      dog.status = "waiting";
-
+      let dog = new Dog(dogFields);
       await dog.save();
 
       cleanFolder(`${UPLOAD_PATH}/`);
