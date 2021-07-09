@@ -39,9 +39,7 @@ router.get("/", async (req: Request, res: Response) => {
       .limit(limit);
     const totalNum = await Dog.countDocuments({});
 
-    const response = { data: dogs, totalNum: totalNum };
-
-    res.status(200).json(response);
+    res.status(200).json({ data: dogs, totalNum: totalNum });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -187,11 +185,8 @@ router.get("/my", auth, async (req: Request, res: Response) => {
       status: { $ne: "deleted" },
     }).sort({ status: -1, registerDate: -1 });
     const totalNum = dogs.length;
-    // if (!dog)
-    //   return res.status(400).json({ status: 400, msg: "Dog not found" });
 
-    const response = { data: dogs, totalNum: totalNum };
-    res.status(200).json(response);
+    res.status(200).json({ data: dogs, totalNum: totalNum });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -306,9 +301,8 @@ router.put(
 
       dog.status = status;
       dog.save();
-      const response = { data: dog };
 
-      res.status(200).json(response);
+      res.status(200).json({ data: dog });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Server Error");
@@ -335,9 +329,8 @@ router.delete("/detail/:dogId", auth, async (req: Request, res: Response) => {
 
     dog.status = "deleted";
     dog.save();
-    const response = { data: "deleted" };
 
-    res.status(200).json(response);
+    res.status(200).json({ data: "deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -352,9 +345,8 @@ router.delete("/detail/:dogId", auth, async (req: Request, res: Response) => {
 router.get("/deleted", async (req: Request, res: Response) => {
   try {
     const dogs = await Dog.find({ status: "deleted" });
-    const response = { data: dogs };
 
-    res.status(200).json(response);
+    res.status(200).json({ data: dogs });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
