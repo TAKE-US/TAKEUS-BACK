@@ -13,7 +13,7 @@ export interface IDog {
   detail: string;
   user: mongoose.Types.ObjectId;
   isInstitution: boolean;
-  institution: string;
+  institutionName: string;
   status: string;
   kakaotalkId: string;
   phoneNumber: string;

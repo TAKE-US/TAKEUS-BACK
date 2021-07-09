@@ -28,6 +28,7 @@ const DogSchema = new mongoose.Schema({
   },
   registerDate: {
     type: Date,
+    default: Date.now,
   },
   detail: {
     type: String,
@@ -44,6 +45,7 @@ const DogSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    default: "waiting",
   },
   kakaotalkId: {
     type: String,
