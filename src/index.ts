@@ -12,6 +12,7 @@ app.use(express.json());
 app.use("/api/dogs", require("./api/dogs"));
 app.use("/api/airports", require("./api/airports"));
 app.use("/api/users", require("./api/user"));
+app.use("/api/auth", require("./api/auth"));
 
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
