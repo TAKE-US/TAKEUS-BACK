@@ -7,8 +7,13 @@ import { calculateSKipAndLimit } from "../utils/paging";
 
 import aws from "../middleware/aws";
 import auth from "../middleware/auth";
+import { crawling } from "../utils/crawling";
+import { data } from "cheerio/lib/api/attributes";
+import { Result } from "express-validator";
+import { extractData } from "../utils/crawling copy";
 
 const router = Router();
+const puppeteer = require("puppeteer");
 
 /**
  *  @route POST api/reviews
@@ -17,21 +22,23 @@ const router = Router();
  */
 router.post(
   "/",
-  auth,
+  //auth,
   async (req, res) => {
     const {
-      user,
+      //user,
       title,
       endingCountry,
       endingAirport,
       hashtags,
       isInstitution,
       institutionName,
-      content,
+      link,
+      desc,
+      image,
     } = req.body;
-
+    
     let reviewFields: IReviewInputDTO = {
-      user: user.id,
+      //user: user.id,
     };
     if (title) reviewFields.title = title;
     if (endingCountry) reviewFields.endingCountry = endingCountry;
@@ -39,7 +46,9 @@ router.post(
     if (hashtags) reviewFields.hashtags = hashtags;
     if (isInstitution) reviewFields.isInstitution = isInstitution;
     if (institutionName) reviewFields.institutionName = institutionName;
-    if (content) reviewFields.content = content;
+    if (link) reviewFields.link = link;
+    if (image) reviewFields.image = image;
+    if (desc) reviewFields.desc = desc;
 
     try {
       // Create

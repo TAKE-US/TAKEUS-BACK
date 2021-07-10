@@ -24,7 +24,13 @@ const ReviewSchema = new mongoose.Schema({
   institutionName: {
     type: String,
   },
-  content: {
+  link: {
+    type: String,
+  },
+  image: {
+    type: String,
+  },
+  desc: {
     type: String,
   },
   writeDate: {

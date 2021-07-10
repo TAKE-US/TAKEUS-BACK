@@ -8,7 +8,9 @@ export interface IReview {
   hashtags: Array<string>;
   isInstitution: string;
   institutionName: string;
-  content: string;
+  link: string;
+  image: string;
+  desc: string;
   writeDate: Date;
 }
 
@@ -20,5 +22,7 @@ export interface IReviewInputDTO {
   hashtags?: Array<string>;
   isInstitution?: string;
   institutionName?: string;
-  content?: string;
+  link?: string;
+  image?: string;
+  desc?: string;
 }
