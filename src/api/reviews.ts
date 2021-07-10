@@ -7,60 +7,71 @@ import { calculateSKipAndLimit } from "../utils/paging";
 
 import aws from "../middleware/aws";
 import auth from "../middleware/auth";
-import { crawling } from "../utils/crawling";
-import { data } from "cheerio/lib/api/attributes";
-import { Result } from "express-validator";
-import { extractData } from "../utils/crawling copy";
 
 const router = Router();
-const puppeteer = require("puppeteer");
+
 
 /**
- *  @route POST api/reviews
- *  @desc Create one review
- *  @access Private
+ *  @route GET api/reviews
+ *  @desc Get all reviews order by date
+ *  @access Public
  */
-router.post(
-  "/",
-  //auth,
-  async (req, res) => {
-    const {
-      //user,
-      title,
-      endingCountry,
-      endingAirport,
-      hashtags,
-      isInstitution,
-      institutionName,
-      link,
-      desc,
-      image,
-    } = req.body;
-    
-    let reviewFields: IReviewInputDTO = {
-      //user: user.id,
-    };
-    if (title) reviewFields.title = title;
-    if (endingCountry) reviewFields.endingCountry = endingCountry;
-    if (endingAirport) reviewFields.endingAirport = endingAirport;
-    if (hashtags) reviewFields.hashtags = hashtags;
-    if (isInstitution) reviewFields.isInstitution = isInstitution;
-    if (institutionName) reviewFields.institutionName = institutionName;
-    if (link) reviewFields.link = link;
-    if (image) reviewFields.image = image;
-    if (desc) reviewFields.desc = desc;
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const orderHash = { latest: -1, oldest: 1, undefined: -1 };
 
-    try {
-      // Create
-      let review = new Review(reviewFields);
-      await review.save();
+    const order: any = req.query.order;
+    const { page = 1, postNumInPage = 7 } = req.query;
 
-      res.status(200).json(review);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error.");
-    }
+    const { skip, limit } = calculateSKipAndLimit(
+      page as any as number,
+      postNumInPage as any as number
+    );
+
+    const reviews = await Review.find()
+      .sort({ writeDate: orderHash[order] })
+      .skip(skip)
+      .limit(limit);
+    const totalNum = await Review.countDocuments({});
+
+    res.status(200).json({ data: reviews, totalNum: totalNum });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
   }
-);
+});
+
+/**
+ *  @route GET api/reviews/search/:endingAirport
+ *  @desc Get all reviews filterd by airport
+ *  @access Public
+ */
+router.get("/search/:endingAirport", async (req: Request, res: Response) => {
+  try {
+    const orderHash = { latest: -1, oldest: 1, undefined: -1 };
+
+    const order: any = req.query.order;
+    const { page = 1, postNumInPage = 7 } = req.query;
+
+    const { skip, limit } = calculateSKipAndLimit(
+      page as any as number,
+      postNumInPage as any as number
+    );
+
+    const reviews = await Review.find({ endingAirport: req.params.endingAirport })
+      .sort({ writeDate: orderHash[order] })
+      .skip(skip)
+      .limit(limit);
+    const totalNum = await Review.countDocuments({});
+
+    const response = { data: reviews, totalNum: totalNum };
+
+    res.status(200).json(response);
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;
