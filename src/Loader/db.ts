@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import config from "../config";
 import Dog from "../models/Dog";
+import Review from "../models/Review";
+import User from "../models/User";
 
 const connectDB = async () => {
   try {
@@ -13,6 +15,12 @@ const connectDB = async () => {
     console.log("Mongoose Connected ...");
     Dog.createCollection().then(function (collection) {
       console.log("Dog Collection is created!");
+    });
+    User.createCollection().then(function (collection){
+      console.log("User Collection is created!");
+    });
+    Review.createCollection().then(function (collection){
+      console.log("Review Collection is created!");
     });
   } catch (err) {
     console.error(err.message);
