@@ -91,12 +91,15 @@ router.get("/search/:endingAirport", async (req: Request, res: Response) => {
       .sort({ registerDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
-    const totalNum = await Dog.countDocuments({});
+    
+    const totalNum = await Dog.countDocuments({
+      endingAirport: req.params.endingAirport,
+      status: "waiting",
+    }); 
 
     const response = { data: dogs, totalNum: totalNum };
 
     res.status(200).json(response);
-
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -180,11 +183,26 @@ router.post(
 router.get("/my", auth, async (req: Request, res: Response) => {
   try {
     const userId = req.body.user.id;
+
+    const { page = 1, postNumInPage = 16 } = req.query;
+
+    const { skip, limit } = calculateSKipAndLimit(
+      page as any as number,
+      postNumInPage as any as number
+    );
+
     const dogs = await Dog.find({
       user: userId,
       status: { $ne: "deleted" },
-    }).sort({ status: -1, registerDate: -1 });
-    const totalNum = dogs.length;
+    })
+      .sort({ status: -1, registerDate: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalNum = await Dog.countDocuments({
+      user: userId,
+      status: { $ne: "deleted" },
+    });
 
     res.status(200).json({ data: dogs, totalNum: totalNum });
   } catch (error) {
@@ -198,13 +216,12 @@ router.get("/my", auth, async (req: Request, res: Response) => {
  *  @desc Update dog
  *  @access Private
  */
- router.put(
+router.put(
   "/detail/:dogId",
   upload.array("photos", 5),
   auth,
   aws.imageUploadToS3,
   async (req, res) => {
-
     const userId = req.body.user.id;
     const dogId = req.params.dogId;
 
@@ -236,7 +253,7 @@ router.get("/my", auth, async (req: Request, res: Response) => {
       twitter,
       facebook,
       detail,
-      photos
+      photos,
     } = req.body;
 
     if (endingCountry) dog.endingCountry = endingCountry;
