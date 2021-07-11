@@ -7,6 +7,7 @@ import { calculateSKipAndLimit } from "../utils/paging";
 
 import aws from "../middleware/aws";
 import auth from "../middleware/auth";
+import { crawling } from "../utils/crawling";
 
 const router = Router();
 
@@ -46,10 +47,11 @@ router.get("/", async (req: Request, res: Response) => {
  *  @desc Get all reviews filterd by airport
  *  @access Public
  */
-router.get("/search/:endingAirport", async (req: Request, res: Response) => {
+ router.get("/search/:endingAirport", async (req: Request, res: Response) => {
   try {
     const orderHash = { latest: -1, oldest: 1, undefined: -1 };
 
+    const tag : any = req.query.hashtags;
     const order: any = req.query.order;
     const { page = 1, postNumInPage = 7 } = req.query;
 
@@ -58,16 +60,15 @@ router.get("/search/:endingAirport", async (req: Request, res: Response) => {
       postNumInPage as any as number
     );
 
-    const reviews = await Review.find({ endingAirport: req.params.endingAirport })
-      .sort({ writeDate: orderHash[order] })
+    const reviews = await Review.find({
+      endingAirport: req.params.endingAirport,
+      hashtags: tag
+    }).sort({ writeDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
     const totalNum = await Review.countDocuments({});
 
-    const response = { data: reviews, totalNum: totalNum };
-
-    res.status(200).json(response);
-
+    res.status(200).json({ data: reviews, totalNum: totalNum });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
