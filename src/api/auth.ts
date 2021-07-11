@@ -43,6 +43,8 @@ router.post(
         });
       }
 
+      user.update({ $currentDate: { lastLoginDate : true } });
+
       // Return jsonwebtoken
       const payload = {
         user: {
