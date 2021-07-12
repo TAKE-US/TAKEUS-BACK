@@ -23,6 +23,6 @@ const SocialUserSchema = new mongoose.Schema({
 });
 
 export default mongoose.model<ISocialUser & mongoose.Document>(
-  "User",
+  "SocialUser",
   SocialUserSchema
 );

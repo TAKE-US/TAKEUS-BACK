@@ -1,23 +1,43 @@
 import { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import axios from "axios";
+
 import config from "../config";
 
 const router = Router();
 
 import SocialUser from "../models/SocialUser";
 
-const findKakaoUser = (token) => {
+const findKakaoUser = async (token) => {
+    let identity;
+    try{
+        console.log(token);
+        const response = await axios({
+            method:'get',
+            url:'https://kapi.kakao.com/v2/user/me',
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response.data.kakao_account.has_email) {
+            identity = response.data.kakao_account.email;
+        } else {
+            identity = response.data.properties.nickname;
+        }
+
+    }catch(e){
+        console.log(e.data);
+    }
+    return identity;
+};
+
+const findGoogleUser = async (token) => {
   const user = "hi";
   return user;
 };
 
-const findGoogleUser = (token) => {
-  const user = "hi";
-  return user;
-};
-
-const findNaverUser = (token) => {
+const findNaverUser = async (token) => {
   const user = "hi";
   return user;
 };
@@ -28,14 +48,14 @@ const findNaverUser = (token) => {
  *  @access Public
  */
 router.get("/", async (req: Request, res: Response) => {
-  const { token, social } = req.body;
+  const { token, social } = req.query;
   let identity;
 
   console.log(token);
   console.log(social);
 
   if (social === "kakao") {
-    identity = findKakaoUser(token);
+    identity = await findKakaoUser(token);
   } else if (social === "google") {
     identity = findGoogleUser(token);
   } else if (social === "naver") {
@@ -45,9 +65,11 @@ router.get("/", async (req: Request, res: Response) => {
     res.status(400).send("invalid social.");
   }
 
+  console.log("identity : ",identity);
+
   try {
     // See if user exists
-    let user = await SocialUser.findOne({ identity });
+    let user = await SocialUser.findOne({ identity: identity });
 
     if (user) {
       user.update({ $currentDate: { lastLoginDate: true } });

@@ -3,6 +3,7 @@ import config from "../config";
 import Dog from "../models/Dog";
 import Review from "../models/Review";
 import User from "../models/User";
+import SocialUser from "../models/SocialUser";
 
 const connectDB = async () => {
   try {
@@ -18,6 +19,9 @@ const connectDB = async () => {
     });
     User.createCollection().then(function (collection){
       console.log("User Collection is created!");
+    });
+    SocialUser.createCollection().then(function (collection){
+      console.log("SocialUser Collection is created!");
     });
     Review.createCollection().then(function (collection){
       console.log("Review Collection is created!");
