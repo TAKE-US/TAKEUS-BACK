@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ICrawlingData } from "./ICrawlingData";
 
 export interface IReview {
   user: mongoose.Types.ObjectId;
@@ -8,9 +9,8 @@ export interface IReview {
   hashtags: Array<string>;
   isInstitution: string;
   institutionName: string;
-  link: string;
-  image: string;
-  desc: string;
+  content: string;
+  crawlingData: [ICrawlingData];
   writeDate: Date;
 }
 
@@ -22,7 +22,6 @@ export interface IReviewInputDTO {
   hashtags?: Array<string>;
   isInstitution?: string;
   institutionName?: string;
-  link?: string;
-  image?: string;
-  desc?: string;
+  content?: string;
+  crawlingData?: ICrawlingData;
 }
