@@ -66,7 +66,10 @@ router.get("/", async (req: Request, res: Response) => {
       .sort({ writeDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
-    const totalNum = await Review.countDocuments({});
+    const totalNum = await Review.countDocuments({}).or([
+      { endingAirport: { $regex: req.params.keyword } },
+      { hashtags: {$regex: req.params.keyword } },
+    ]);
 
     res.status(200).json({ data: reviews, totalNum: totalNum });
   } catch (error) {
@@ -100,7 +103,10 @@ router.get("/", async (req: Request, res: Response) => {
       .sort({ writeDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
-    const totalNum = await Review.countDocuments({});
+    const totalNum = await Review.countDocuments({
+      endingAirport: req.params.endingAirport,
+      hashtags: hashtags,
+    });
 
     res.status(200).json({ data: reviews, totalNum: totalNum });
   } catch (error) {
