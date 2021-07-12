@@ -231,12 +231,12 @@ router.post(
 );
 
 /**
- *  @route PUT api/reviews/:reviewId
+ *  @route PUT api/reviews/detail/:reviewId
  *  @desc Update review
  *  @access Private
  */
  router.put(
-  "/:reviewId",
+  "/detail/:reviewId",
   auth,
   async (req, res) => {
     const extractData = html => {
@@ -321,11 +321,11 @@ router.post(
 );
 
 /**
- *  @route DELETE api/reviews/:reviewId/
+ *  @route DELETE api/reviews/detail/:reviewId/
  *  @desc Delete review
  *  @access Private
  */
- router.delete("/:reviewId", auth, async (req: Request, res: Response) => {
+ router.delete("/detail/:reviewId", auth, async (req: Request, res: Response) => {
   try {
     const userId = req.body.user.id;
     const reviewId = req.params.reviewId;
