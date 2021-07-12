@@ -118,7 +118,7 @@ router.get("/", async (req: Request, res: Response) => {
 /**
  *  @route POST api/reviews
  *  @desc Create reviews
- *  @access Public
+ *  @access Private
 */
 router.post(
   "/",
