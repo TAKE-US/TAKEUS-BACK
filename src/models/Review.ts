@@ -24,15 +24,23 @@ const ReviewSchema = new mongoose.Schema({
   institutionName: {
     type: String,
   },
-  link: {
+  content: {
     type: String,
   },
-  image: {
-    type: String,
-  },
-  desc: {
-    type: String,
-  },
+  crawlingData: [
+    {
+      link: {
+        type: String,
+      },
+      image: {
+        type: String,
+      },
+      desc: {
+        type: String,
+      },
+      _id: false
+    },
+  ],
   writeDate: {
     type: Date,
     default: Date.now,
