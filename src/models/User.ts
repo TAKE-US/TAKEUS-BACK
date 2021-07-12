@@ -15,6 +15,11 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  lastLoginDate: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
 });
 
 export default mongoose.model<IUser & mongoose.Document>("User", UserSchema);
