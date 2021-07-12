@@ -10,7 +10,8 @@ const router = Router();
  */
 router.get("/country", async (req: Request, res: Response) => {
   try {
-    const airports = await Airport.find();
+    const airports = await Airport.findOne();
+
     res.json(airports);
   } catch (error) {
     console.error(error.message);
