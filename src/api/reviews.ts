@@ -237,7 +237,7 @@ router.post(
  */
  router.put(
   "/:reviewId",
-  //auth,
+  auth,
   async (req, res) => {
     const extractData = html => {
 
@@ -256,7 +256,7 @@ router.post(
     const browser = await puppeteer.launch(browserOption);
     const page = await browser.newPage();
     
-    //const userId = req.body.user.id;
+    const userId = req.body.user.id;
     const reviewId = req.params.reviewId;
 
     let review = await Review.findOne({ _id: reviewId });
@@ -264,11 +264,11 @@ router.post(
     if (!review)
       return res.status(400).json({ status: 400, msg: "리뷰가 없습니다." });
 
-    //const owner = review.user;
+    const owner = review.user;
 
-    //if (userId != owner) {
-      //res.status(403).json({ msg: "Invalid access. no authenticated." });
-    //}
+    if (userId != owner) {
+      res.status(403).json({ msg: "Invalid access. no authenticated." });
+    }
 
     const {
       title,
@@ -295,18 +295,17 @@ router.post(
     if (institutionName) review.institutionName = institutionName;
     if (content) review.content = content;
     
-    // Build crawlingData object
-    //if (add.link) review.crawlingData.link = add.link;
-    //if (add.image) review.crawlingData.image = add.image;
-    //if (add.desc) review.crawlingData.desc = add.desc;
-
     try {
-       // Crawling
-       const url = req.body.content;
-       const response = await page.goto(url);
-       const html = await response.text();
-       extractData(html);
+      // Crawling
+      const url = req.body.content;
+      const response = await page.goto(url);
+      const html = await response.text();
+      extractData(html);
+
       // Update
+      await review.save();
+
+      review.crawlingData.splice(0,1);
       await review.save();
 
       review = await Review.findOne({ _id: reviewId });
