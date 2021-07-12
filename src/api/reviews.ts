@@ -5,10 +5,7 @@ import { IReviewInputDTO } from "../interfaces/IReview";
 
 import { calculateSKipAndLimit } from "../utils/paging";
 
-import aws from "../middleware/aws";
 import auth from "../middleware/auth";
-import { crawling } from "../utils/crawling";
-import { test } from "../utils/test";
 
 const router = Router();
 const puppeteer = require("puppeteer");
