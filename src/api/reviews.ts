@@ -154,7 +154,7 @@ router.get("/", async (req: Request, res: Response) => {
 */
 router.post(
   "/",
-  //auth,
+  auth,
   async (req: Request, res: Response) => {
     const extractData = html => {
 
@@ -192,7 +192,7 @@ router.post(
 
     // Build review object
     let reviewFields: IReviewInputDTO = {
-      //user: user.id,
+      user: user.id,
     };
     if (title) reviewFields.title = title;
     if (endingCountry) reviewFields.endingCountry = endingCountry;
@@ -320,5 +320,31 @@ router.post(
     }
   }
 );
+
+/**
+ *  @route DELETE api/reviews/:reviewId/
+ *  @desc Delete review
+ *  @access Private
+ */
+ router.delete("/:reviewId", auth, async (req: Request, res: Response) => {
+  try {
+    const userId = req.body.user.id;
+    const reviewId = req.params.reviewId;
+
+    let review = await Review.findOne({ _id: reviewId });
+    const owner = review.user;
+
+    if (userId != owner) {
+      res.status(403).json({ msg: "Invalid access. no authenticated." });
+    }
+
+    await review.remove();
+
+    res.status(200).json({ data: "deleted" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;
