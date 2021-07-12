@@ -116,6 +116,38 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 /**
+ *  @route GET api/reviews/my
+ *  @desc Get my reviews
+ *  @access Private
+ */
+ router.get("/my", auth, async (req: Request, res: Response) => {
+  try {
+    const { page = 1, postNumInPage = 5 } = req.query;
+
+    const { skip, limit } = calculateSKipAndLimit(
+      page as any as number,
+      postNumInPage as any as number
+    );
+
+    const reviews = await Review.find({
+      user: req.body.user.id,
+    })
+      .sort({ writeDate: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalNum = await Review.countDocuments({
+      user: req.body.user.id,
+    });
+
+    res.status(200).json({ data: reviews, totalNum: totalNum });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+/**
  *  @route POST api/reviews
  *  @desc Create reviews
  *  @access Private
