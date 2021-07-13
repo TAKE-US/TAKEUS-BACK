@@ -1,39 +1,41 @@
 import { Router, Request, Response } from "express";
+import config from "../config";
 
 const nodemailer = require('nodemailer');
 const router = Router();
 
 router.post(
   "/", 
-  function(req, res, next){
-    let name = req.body.name;
-    let email = req.body.email;
-    let text = req.body.text;
+  async (req: Request, res: Response, next) => {
+    const {
+      name,
+      email,
+      text,
+    } = req.body;
 
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'takeus2125@gmail.com',  // gmail 계정 아이디를 입력
-        pass: 'mytakeus2125!'          // gmail 계정의 비밀번호를 입력
+        user: config.user,  // gmail 계정 아이디
+        pass: config.pass,  // gmail 계정의 비밀번호
       }
     });
 
     let mailOptions = {
-      from: 'takeus2125@gmail.com',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
-      to: email ,                     // 수신 메일 주소
-      subject: name,   // 제목
-      text: text,  // 내용
+      from: config.user,    // 발송 메일 주소
+      to: email ,           // 수신 메일 주소
+      subject: name,        // 메일 제목
+      text: text,           // 메일 내용
     };
 
-    transporter.sendMail(mailOptions, function(error, info){
+    transporter.sendMail(mailOptions, function(error, info) {
       if (error) {
-        console.log(error);
+        console.error(error.message);
       }
       else {
         console.log('Email sent: ' + info.response);
       }
     });
-
   res.redirect("/");
 })
 
