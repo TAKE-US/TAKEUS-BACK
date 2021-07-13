@@ -16,10 +16,10 @@ const connectDB = async () => {
     Dog.createCollection().then(function (collection) {
       console.log("Dog Collection is created!");
     });
-    User.createCollection().then(function (collection){
+    User.createCollection().then(function (collection) {
       console.log("User Collection is created!");
     });
-    Review.createCollection().then(function (collection){
+    Review.createCollection().then(function (collection) {
       console.log("Review Collection is created!");
     });
   } catch (err) {

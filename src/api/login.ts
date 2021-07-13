@@ -9,7 +9,11 @@ const router = Router();
 import User from "../models/User";
 
 const findSocialIdentity = async (token, social) => {
-  const urlHash = {"kakao": "https://kapi.kakao.com/v2/user/me", "google": "https://www.googleapis.com/oauth2/v2/userinfo", "naver": "www.naver.com"};
+  const urlHash = {
+    kakao: "https://kapi.kakao.com/v2/user/me",
+    google: "https://www.googleapis.com/oauth2/v2/userinfo",
+    naver: "www.naver.com",
+  };
 
   let identity;
 
@@ -21,7 +25,7 @@ const findSocialIdentity = async (token, social) => {
         Authorization: `Bearer ${token}`,
       },
     });
-  
+
     if (social === "kakao") {
       if (response.data.kakao_account.has_email) {
         identity = response.data.kakao_account.email;
@@ -32,15 +36,12 @@ const findSocialIdentity = async (token, social) => {
       identity = response.data.email;
     } else {
       identity = "naver";
-    } 
+    }
     return identity;
   } catch (e) {
     console.log(e.data);
   }
-  return identity;
-
-
-}
+};
 
 /**
  *  @route POST api/login
@@ -93,7 +94,7 @@ router.post("/", async (req: Request, res: Response) => {
  *  @desc request login
  *  @access Public
  */
- router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const users = await User.find();
 
@@ -103,6 +104,6 @@ router.post("/", async (req: Request, res: Response) => {
     console.error(error.message);
     res.status(500).send("Server Error");
   }
-})
+});
 
 module.exports = router;
