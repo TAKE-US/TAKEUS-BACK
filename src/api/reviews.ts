@@ -79,7 +79,7 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 /**
- *  @route GET api/reviews/:endingAirport
+ *  @route GET api/reviews/search/:endingAirport
  *  @desc Get all reviews filterd by endingAirport,hashtags
  *  @access Public
  */
@@ -116,11 +116,11 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 /**
- *  @route GET api/reviews/my
+ *  @route GET api/reviews/list/my
  *  @desc Get my reviews
  *  @access Private
  */
- router.get("/my", auth, async (req: Request, res: Response) => {
+ router.get("/list/my", auth, async (req: Request, res: Response) => {
   try {
     const { page = 1, postNumInPage = 5 } = req.query;
 
