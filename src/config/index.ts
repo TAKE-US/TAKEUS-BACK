@@ -30,6 +30,12 @@ export default {
   jwtSecret: process.env.JWT_SECRET,
   jwtAlgorithm: process.env.JWT_ALGO,
 
+  /**
+   * senderInfo
+   */
+   user: process.env.USER,
+   pass: process.env.PASS,
+
   testUserToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjBlN2ZhNTk0N2E2ZGYzNDljYzI3N2UxIn0sImlhdCI6MTYyNTgxNTY0MSwiZXhwIjoxNjI1ODUxNjQxfQ.KbwFkVrjLLXwV0eQteSz3XCr59SLDbcz16v3kpI9zlo",
   
 
