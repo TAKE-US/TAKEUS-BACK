@@ -2,16 +2,16 @@ import mongoose from "mongoose";
 import { IUser } from "../interfaces/IUser";
 
 const UserSchema = new mongoose.Schema({
-  email: {
+  identity: {
     type: String,
     required: true,
     unique: true,
   },
-  password: {
+  social: {
     type: String,
     required: true,
   },
-  date: {
+  createdDate: {
     type: Date,
     default: Date.now,
   },

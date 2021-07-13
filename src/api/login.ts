@@ -6,75 +6,65 @@ import config from "../config";
 
 const router = Router();
 
-import SocialUser from "../models/SocialUser";
+import User from "../models/User";
 
-const findKakaoUser = async (token) => {
-    let identity;
-    try{
-        console.log(token);
-        const response = await axios({
-            method:'get',
-            url:'https://kapi.kakao.com/v2/user/me',
-            headers:{
-                Authorization: `Bearer ${token}`
-            }
-        });
+const findSocialIdentity = async (token, social) => {
+  const urlHash = {"kakao": "https://kapi.kakao.com/v2/user/me", "google": "https://www.googleapis.com/oauth2/v2/userinfo", "naver": "www.naver.com"};
 
-        if (response.data.kakao_account.has_email) {
-            identity = response.data.kakao_account.email;
-        } else {
-            identity = response.data.properties.nickname;
-        }
+  let identity;
 
-    }catch(e){
-        console.log(e.data);
-    }
+  try {
+    const response = await axios({
+      method: "get",
+      url: urlHash[social],
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
+    if (social === "kakao") {
+      if (response.data.kakao_account.has_email) {
+        identity = response.data.kakao_account.email;
+      } else {
+        identity = response.data.properties.nickname;
+      }
+    } else if (social === "google") {
+      identity = response.data.email;
+    } else {
+      identity = "naver";
+    } 
     return identity;
-};
+  } catch (e) {
+    console.log(e.data);
+  }
+  return identity;
 
-const findGoogleUser = async (token) => {
-  const user = "hi";
-  return user;
-};
 
-const findNaverUser = async (token) => {
-  const user = "hi";
-  return user;
-};
+}
 
 /**
- *  @route Get api/login
+ *  @route POST api/login
  *  @desc request login
  *  @access Public
  */
-router.get("/", async (req: Request, res: Response) => {
-  const { token, social } = req.query;
+router.post("/", async (req: Request, res: Response) => {
+  const { token, social } = req.body;
   let identity;
 
-  console.log(token);
-  console.log(social);
+  identity = await findSocialIdentity(token, social);
 
-  if (social === "kakao") {
-    identity = await findKakaoUser(token);
-  } else if (social === "google") {
-    identity = findGoogleUser(token);
-  } else if (social === "naver") {
-    identity = findNaverUser(token);
-  } else {
-    console.log("invalid social");
-    res.status(400).send("invalid social.");
+  if (!identity) {
+    res.status(400).json({ msg: "Invalid Access Token or Social" });
   }
-
-  console.log("identity : ",identity);
 
   try {
     // See if user exists
-    let user = await SocialUser.findOne({ identity: identity });
+    let user = await User.findOne({ identity: identity });
 
     if (user) {
       user.update({ $currentDate: { lastLoginDate: true } });
     } else {
-      user = new SocialUser({
+      user = new User({
         identity,
         social,
       });
@@ -97,5 +87,22 @@ router.get("/", async (req: Request, res: Response) => {
     res.status(500).send("Server Error");
   }
 });
+
+/**
+ *  @route Get api/login
+ *  @desc request login
+ *  @access Public
+ */
+ router.get("/", async (req: Request, res: Response) => {
+  try {
+    const users = await User.find();
+
+    const response = { data: users };
+    res.status(200).json(response);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+})
 
 module.exports = router;
