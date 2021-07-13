@@ -27,7 +27,7 @@ router.post(
     });
 
     let mailOptions = {
-      from: email,              // 발송 메일 주소
+      from: email,              // 발신 메일 주소
       to: config.mailuser ,     // 수신 메일 주소
       subject: name,            // 메일 제목
       text: text,               // 메일 내용
