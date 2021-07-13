@@ -20,8 +20,10 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.20.0",
     "@aws-sdk/types": "^3.20.0",
+    "@types/axios": "^0.14.0",
     "@types/multer": "^1.4.7",
     "aws-sdk": "^2.941.0",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "cheerio": "^1.0.0-rc.10",
     "del": "^6.0.0",

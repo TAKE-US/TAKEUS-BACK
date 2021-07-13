@@ -11,9 +11,8 @@ app.use(express.json());
 // Define Routes
 app.use("/api/dogs", require("./api/dogs"));
 app.use("/api/airports", require("./api/airports"));
-app.use("/api/users", require("./api/user"));
-app.use("/api/auth", require("./api/auth"));
 app.use("/api/reviews", require("./api/reviews"));
+app.use("/api/login", require("./api/login"));
 app.use("/api/email", require("./api/email"));
 
 app.use(function (err, req, res, next) {
