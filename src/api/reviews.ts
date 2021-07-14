@@ -194,11 +194,8 @@ router.post(
     if (add.desc) reviewFields.crawlingData.desc = add.desc;
 
     try {
-      //Create
       let review = new Review(reviewFields);
-      console.log("add1 = " ,add);
-      console.log(review);
-
+      // Crawling
       axios.get(url).then(html => {
         const $ = cheerio.load(html.data);
         const $bodyList = $('head');
@@ -207,16 +204,12 @@ router.post(
           add.image = $(this).find('meta[property="og:image"]').attr('content'),
           add.desc = $(this).find('meta[property="og:description"]').attr('content')
 
-          console.log("addcr = " ,add);
           review.crawlingData.unshift(add);
-          console.log("unshift= " , review);
-          console.log("unshift= " , add);
           review.save();
-          console.log("save= " , review); 
         });
-      }) //크롤링 끝
+      })
      
-      res.json(review);
+      res.json({ review, message: "후기 등록 성공" });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Server Error");
@@ -233,23 +226,6 @@ router.post(
   "/detail/:reviewId",
   auth,
   async (req, res) => {
-    const extractData = html => {
-
-      const $ = cheerio.load(html);
-      const $items = $('head');
-      $items.each(function (i, elem) {
-          add.link = $(this).find('meta[property="og:url"]').attr('content');
-          add.image = $(this).find('meta[property="og:image"]').attr('content');
-          add.desc = $(this).find('meta[property="og:description"]').attr('content');
-      });
-    }
-  
-    const browserOption = {
-      headless : true,
-    };
-    const browser = await puppeteer.launch(browserOption);
-    const page = await browser.newPage();
-    
     const userId = req.body.user.id;
     const reviewId = req.params.reviewId;
 
@@ -272,7 +248,6 @@ router.post(
       isInstitution,
       institutionName,
       content,
-      user,
     } = req.body;
     
     const add = {
@@ -280,6 +255,8 @@ router.post(
       desc: null,
       image: null,
     };
+
+    let url = req.body.content;
 
     if (title) review.title = title;
     if (endingCountry) review.endingCountry = endingCountry;
@@ -290,23 +267,25 @@ router.post(
     if (content) review.content = content;
     
     try {
-      // Crawling
-      const url = req.body.content;
-      const response = await page.goto(url);
-      const html = await response.text();
-      extractData(html);
-
       // Update
       await review.save();
 
-      review.crawlingData.splice(0,1);
-      await review.save();
+      // Crawling
+      axios.get(url).then(html => {
+        const $ = cheerio.load(html.data);
+        const $bodyList = $('head');
+        $bodyList.each(function(i, elem) {
+          add.link = $(this).find('meta[property="og:url"]').attr('content'),
+          add.image = $(this).find('meta[property="og:image"]').attr('content'),
+          add.desc = $(this).find('meta[property="og:description"]').attr('content')
 
-      review = await Review.findOne({ _id: reviewId });
-      review.crawlingData.unshift(add);
-      await review.save();
+          review.crawlingData.splice(0,1);
+          review.crawlingData.unshift(add);
+          review.save();
+        });
+      })
 
-      res.status(200).json(review);
+      res.status(200).json({ review, message: "후기 수정 성공" });
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error.");
