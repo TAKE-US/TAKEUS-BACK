@@ -4,6 +4,11 @@ import config from "../config";
 const nodemailer = require('nodemailer');
 const router = Router();
 
+/**
+ *  @route POST api/email
+ *  @desc Send the email
+ *  @access Public
+ */
 router.post(
   "/", 
   async (req: Request, res: Response, next) => {
@@ -28,15 +33,14 @@ router.post(
       text: text,           // 메일 내용
     };
 
-    transporter.sendMail(mailOptions, function(error, info) {
-      if (error) {
-        console.error(error.message);
-      }
-      else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
-  res.redirect("/");
+    try {
+      transporter.sendMail(mailOptions);
+
+      res.status(200).json(mailOptions);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error.");
+    } 
 })
 
 module.exports = router;
