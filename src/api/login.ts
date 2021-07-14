@@ -27,10 +27,10 @@ const findSocialIdentity = async (token, social) => {
     });
 
     if (social === "kakao") {
-      if (response.data.kakao_account.has_email) {
+      if (response.data.kakao_account.email) {
         identity = response.data.kakao_account.email;
       } else {
-        identity = response.data.properties.nickname;
+        identity = response.data.id;
       }
     } else if (social === "google") {
       identity = response.data.email;
