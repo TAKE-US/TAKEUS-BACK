@@ -33,8 +33,8 @@ export default {
   /**
    * senderInfo
    */
-   user: process.env.USER,
-   pass: process.env.PASS,
+   mailuser: process.env.MAIL_USER,
+   mailpass: process.env.MAIL_PASS,
 
   testUserToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjBlN2ZhNTk0N2E2ZGYzNDljYzI3N2UxIn0sImlhdCI6MTYyNTgxNTY0MSwiZXhwIjoxNjI1ODUxNjQxfQ.KbwFkVrjLLXwV0eQteSz3XCr59SLDbcz16v3kpI9zlo",
   
