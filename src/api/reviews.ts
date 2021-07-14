@@ -6,8 +6,6 @@ import { IReviewInputDTO } from "../interfaces/IReview";
 import { calculateSKipAndLimit } from "../utils/paging";
 
 import auth from "../middleware/auth";
-import { run } from "./crawling";
-import { LexRuntime } from "aws-sdk";
 
 const router = Router();
 const puppeteer = require("puppeteer");
