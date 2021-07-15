@@ -4,6 +4,8 @@ import Dog from "../models/Dog";
 import Review from "../models/Review";
 import User from "../models/User";
 
+import { insertDummyDogs } from "../utils/dummy";
+
 const connectDB = async () => {
   try {
     await mongoose.connect(config.mongoURI, {
@@ -22,6 +24,9 @@ const connectDB = async () => {
     Review.createCollection().then(function (collection) {
       console.log("Review Collection is created!");
     });
+
+    // insertDummyDogs();
+
   } catch (err) {
     console.error(err.message);
     process.exit(1);
