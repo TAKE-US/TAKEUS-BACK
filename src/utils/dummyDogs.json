@@ -98,7 +98,11 @@
         ],
         "user": "60ed52d4f03ef91225fdb084",
         "endingCountry": "프랑스",
+<<<<<<< HEAD
+        "endingAirport": " 파리 샤를드골 국제공항",
+=======
         "endingAirport": " 파리 샤를드롤 국제공항",
+>>>>>>> e98db02f7cd4c2d55ca8020185991dfffc7f65a1
         "name": "두두",
         "gender": "Male",
         "age": 4,

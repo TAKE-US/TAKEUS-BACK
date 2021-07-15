@@ -1,6 +1,14 @@
 import express from "express";
-const app = express();
+import cors from "cors";
 import connectDB from "./Loader/db";
+
+const app = express();
+
+const corsOptions = {
+  origin: "https://take--us.web.app/",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 // Connect Database
 connectDB();
