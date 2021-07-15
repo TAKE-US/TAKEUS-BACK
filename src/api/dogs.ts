@@ -4,7 +4,7 @@ import multer from "multer";
 import Dog from "../models/Dog";
 import { IDogInputDTO } from "../interfaces/IDog";
 
-import { imageFilter, cleanFolder } from "../utils/filter";
+import { imageFilter } from "../utils/filter";
 import { calculateSKipAndLimit } from "../utils/paging";
 
 import aws from "../middleware/aws";
@@ -165,7 +165,7 @@ router.post(
       let dog = new Dog(dogFields);
       await dog.save();
 
-      cleanFolder(`${UPLOAD_PATH}/`);
+      console.log("Upload Success!");
 
       res.status(200).json(dog);
     } catch (err) {
@@ -278,7 +278,7 @@ router.put(
       // Update
       await dog.save();
 
-      cleanFolder(`${UPLOAD_PATH}/`);
+      console.log("Upload Success!");
 
       res.status(200).json(dog);
     } catch (err) {
