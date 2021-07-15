@@ -123,6 +123,9 @@ router.get("/", async (req: Request, res: Response) => {
  */
  router.get("/list/my", auth, async (req: Request, res: Response) => {
   try {
+    const orderHash = { latest: -1, oldest: 1, undefined: -1 };
+
+    const order: any = req.query.order;
     const { page = 1, postNumInPage = 5 } = req.query;
 
     const { skip, limit } = calculateSKipAndLimit(
@@ -133,7 +136,7 @@ router.get("/", async (req: Request, res: Response) => {
     const reviews = await Review.find({
       user: req.body.user.id,
     })
-      .sort({ writeDate: -1 })
+      .sort({ writeDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
 
