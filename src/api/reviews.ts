@@ -117,6 +117,27 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 /**
+ *  @route GET api/reveiws/detail/:reviewId
+ *  @desc Get one review with matching id. order by date
+ *  @access Public
+ */
+ router.get("/detail/:reviewId", async (req: Request, res: Response) => {
+  try {
+    const reviewId = req.params.reviewId;
+    const review = await Review.findOne({ _id: reviewId });
+
+    if (!review)
+      return res.status(400).json({ status: 400, msg: "Review not found" });
+
+    const response = { data: review };
+    res.status(200).json(response);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+/**
  *  @route GET api/reviews/list/my
  *  @desc Get my reviews
  *  @access Private
