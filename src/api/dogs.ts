@@ -182,6 +182,8 @@ router.post(
  */
 router.get("/my", auth, async (req: Request, res: Response) => {
   try {
+    const orderHash = { latest: -1, oldest: 1, undefined: 1 };
+    const order: any = req.query.order;
     const userId = req.body.user.id;
 
     const { page = 1, postNumInPage = 16 } = req.query;
@@ -195,7 +197,7 @@ router.get("/my", auth, async (req: Request, res: Response) => {
       user: userId,
       status: { $ne: "deleted" },
     })
-      .sort({ status: -1, registerDate: -1 })
+      .sort({ status: -1, registerDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
 

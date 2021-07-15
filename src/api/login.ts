@@ -12,7 +12,7 @@ const findSocialIdentity = async (token, social) => {
   const urlHash = {
     kakao: "https://kapi.kakao.com/v2/user/me",
     google: "https://www.googleapis.com/oauth2/v2/userinfo",
-    naver: "www.naver.com",
+    naver: "https://openapi.naver.com/v1/nid/me",
   };
 
   let identity;
@@ -34,8 +34,8 @@ const findSocialIdentity = async (token, social) => {
       }
     } else if (social === "google") {
       identity = response.data.email;
-    } else {
-      identity = "naver";
+    } else if (social === "naver") {
+      identity = response.data.response.id;
     }
     return identity;
   } catch (e) {
@@ -81,7 +81,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 }, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+      res.json({ token: token, id: user.id });
     });
   } catch (err) {
     console.error(err.message);
