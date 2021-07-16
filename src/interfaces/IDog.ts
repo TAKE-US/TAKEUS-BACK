@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export interface IDog {
   name: string;
   gender: string;
-  age: number;
+  age: string;
   weight: number;
   health: string;
   neutralization: boolean;
@@ -26,7 +26,7 @@ export interface IDog {
 export interface IDogInputDTO {
   name?: string;
   gender?: string;
-  age?: number;
+  age?: string;
   weight?: number;
   health?: string;
   neutralization?: boolean;
