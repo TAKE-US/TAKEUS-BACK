@@ -8,7 +8,6 @@ import { calculateSKipAndLimit } from "../utils/paging";
 import auth from "../middleware/auth";
 
 const router = Router();
-const puppeteer = require("puppeteer");
 const axios = require("axios");
 const cheerio = require('cheerio');
 
@@ -61,15 +60,15 @@ router.get("/", async (req: Request, res: Response) => {
     );
 
     const reviews = await Review.find().or([
-      { endingAirport: { $regex: req.params.keyword } },
-      { hashtags: {$regex: req.params.keyword } },
+      { endingAirport: req.params.keyword },
+      { hashtags: req.params.keyword },
     ])
       .sort({ writeDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
     const totalNum = await Review.countDocuments({}).or([
-      { endingAirport: { $regex: req.params.keyword } },
-      { hashtags: {$regex: req.params.keyword } },
+      { endingAirport: req.params.keyword },
+      { hashtags: req.params.keyword },
     ]);
 
     res.status(200).json({ data: reviews, totalNum: totalNum });
