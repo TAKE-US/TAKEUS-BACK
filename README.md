@@ -234,7 +234,7 @@ git push origin :feature/기능 브랜치
 git pull origin develop
 ```
 
-# :paw_prints::boy::girl: Developers
+# :paw_prints: Developers
 | 박정무 | 강한희 |
 |:---:|:---------:|
 | <img src="https://user-images.githubusercontent.com/68781598/124697830-78975d80-df22-11eb-9300-63366ede33b0.png" width="200px" />  | <img src="https://user-images.githubusercontent.com/68781598/124511973-4d254d80-de12-11eb-96b8-60741367d22a.png" width="200px" />  |
