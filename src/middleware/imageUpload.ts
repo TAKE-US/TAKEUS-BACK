@@ -1,7 +1,8 @@
 import fs from "fs";
 import request from "request";
+import config from "../config";
 
-const URL = "http://localhost:5001/api/upload";
+const URL = config.fileUploadServerUrl;
 
 export default (req, res, next) => {
   let photos = [];

@@ -17,7 +17,7 @@ export default {
    * That long string from mlab
    */
   mongoURI: process.env.MONGODB_URI,
-  
+
   /**
    * aws access key for image upload to s3
    */
@@ -33,10 +33,11 @@ export default {
   /**
    * senderInfo
    */
-   mailuser: process.env.MAIL_USER,
-   mailpass: process.env.MAIL_PASS,
+  mailuser: process.env.MAIL_USER,
+  mailpass: process.env.MAIL_PASS,
 
-  testUserToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjBlN2ZhNTk0N2E2ZGYzNDljYzI3N2UxIn0sImlhdCI6MTYyNTgxNTY0MSwiZXhwIjoxNjI1ODUxNjQxfQ.KbwFkVrjLLXwV0eQteSz3XCr59SLDbcz16v3kpI9zlo",
-  
+  fileUploadServerUrl: process.env.FILE_UPLOAD_SERVER_URL,
 
+  testUserToken:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjBlN2ZhNTk0N2E2ZGYzNDljYzI3N2UxIn0sImlhdCI6MTYyNTgxNTY0MSwiZXhwIjoxNjI1ODUxNjQxfQ.KbwFkVrjLLXwV0eQteSz3XCr59SLDbcz16v3kpI9zlo",
 };
