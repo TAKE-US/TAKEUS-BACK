@@ -5,7 +5,7 @@ import connectDB from "./Loader/db";
 const app = express();
 
 const corsOptions = {
-  origin: "https://take--us.web.app/",
+  origin: "*",
   credentials: true,
 };
 app.use(cors(corsOptions));
