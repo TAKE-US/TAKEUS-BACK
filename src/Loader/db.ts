@@ -4,7 +4,9 @@ import Dog from "../models/Dog";
 import Review from "../models/Review";
 import User from "../models/User";
 
-import { insertDummyDogs } from "../utils/dummy";
+import { insertDummy } from "../utils/dummy";
+
+const dummyDataRootPath = "./src/utils/dummyData/";
 
 const connectDB = async () => {
   try {
@@ -17,16 +19,18 @@ const connectDB = async () => {
     console.log("Mongoose Connected ...");
     Dog.createCollection().then(function (collection) {
       console.log("Dog Collection is created!");
+      // insertDummy(Dog, dummyDataRootPath + "dummyDogs.json");
     });
+
     User.createCollection().then(function (collection) {
       console.log("User Collection is created!");
+      // insertDummy(User, dummyDataRootPath + "dummyUsers.json");
     });
+
     Review.createCollection().then(function (collection) {
       console.log("Review Collection is created!");
+      // insertDummy(Review, dummyDataRootPath + "dummyReviews.json");
     });
-
-    // insertDummyDogs();
-
   } catch (err) {
     console.error(err.message);
     process.exit(1);
