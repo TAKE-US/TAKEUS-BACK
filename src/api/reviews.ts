@@ -9,7 +9,7 @@ import auth from "../middleware/auth";
 
 const router = Router();
 const axios = require("axios");
-const cheerio = require('cheerio');
+const cheerio = require("cheerio");
 
 /**
  *  @route GET api/reviews
@@ -47,7 +47,7 @@ router.get("/", async (req: Request, res: Response) => {
  *  @desc Get all reviews filterd by keyword
  *  @access Public
  */
- router.get("/:keyword", async (req: Request, res: Response) => {
+router.get("/:keyword", async (req: Request, res: Response) => {
   try {
     const orderHash = { latest: -1, oldest: 1, undefined: -1 };
 
@@ -59,10 +59,11 @@ router.get("/", async (req: Request, res: Response) => {
       postNumInPage as any as number
     );
 
-    const reviews = await Review.find().or([
-      { endingAirport: req.params.keyword },
-      { hashtags: req.params.keyword },
-    ])
+    const reviews = await Review.find()
+      .or([
+        { endingAirport: req.params.keyword },
+        { hashtags: req.params.keyword },
+      ])
       .sort({ writeDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
@@ -83,7 +84,7 @@ router.get("/", async (req: Request, res: Response) => {
  *  @desc Get all reviews filterd by endingAirport,hashtags
  *  @access Public
  */
- router.get("/search/:endingAirport", async (req: Request, res: Response) => {
+router.get("/search/:endingAirport", async (req: Request, res: Response) => {
   try {
     const orderHash = { latest: -1, oldest: 1, undefined: -1 };
 
@@ -120,7 +121,7 @@ router.get("/", async (req: Request, res: Response) => {
  *  @desc Get one review with matching id. order by date
  *  @access Public
  */
- router.get("/detail/:reviewId", async (req: Request, res: Response) => {
+router.get("/detail/:reviewId", async (req: Request, res: Response) => {
   try {
     const reviewId = req.params.reviewId;
     const review = await Review.findOne({ _id: reviewId });
@@ -141,7 +142,7 @@ router.get("/", async (req: Request, res: Response) => {
  *  @desc Get my reviews
  *  @access Private
  */
- router.get("/list/my", auth, async (req: Request, res: Response) => {
+router.get("/list/my", auth, async (req: Request, res: Response) => {
   try {
     const orderHash = { latest: -1, oldest: 1, undefined: -1 };
 
@@ -175,171 +176,187 @@ router.get("/", async (req: Request, res: Response) => {
  *  @route POST api/reviews
  *  @desc Create reviews
  *  @access Private
-*/
-router.post(
-  "/",
-  auth,
-  async (req: Request, res: Response) => {
-    const {
-      title,
-      endingCountry,
-      endingAirport,
-      hashtags,
-      isInstitution,
-      institutionName,
-      content,
-      user,
-    } = req.body;
+ */
+router.post("/", auth, async (req: Request, res: Response) => {
+  const {
+    title,
+    endingCountry,
+    endingAirport,
+    hashtags,
+    isInstitution,
+    institutionName,
+    content,
+    user,
+  } = req.body;
 
-    const add = {
-      link: null,
-      desc: null,
-      image: null,
-    };
+  const add = {
+    link: null,
+    desc: null,
+    image: null,
+  };
 
-    let url = req.body.content;
+  let url = req.body.content;
 
-    // Build review object
-    let reviewFields: IReviewInputDTO = {
-      user: user.id,
-    };
-    if (title) reviewFields.title = title;
-    if (endingCountry) reviewFields.endingCountry = endingCountry;
-    if (endingAirport) reviewFields.endingAirport = endingAirport;
-    if (isInstitution) reviewFields.isInstitution = isInstitution;
-    if (institutionName) reviewFields.institutionName = institutionName;
-    if (hashtags) reviewFields.hashtags = hashtags;
-    if (content) reviewFields.content = content;
-    
-    // Build crawlingData object
-    if (add.link) reviewFields.crawlingData.link = add.link;
-    if (add.image) reviewFields.crawlingData.image = add.image;
-    if (add.desc) reviewFields.crawlingData.desc = add.desc;
+  // Build review object
+  let reviewFields: IReviewInputDTO = {
+    user: user.id,
+  };
+  if (title) reviewFields.title = title;
+  if (endingCountry) reviewFields.endingCountry = endingCountry;
+  if (endingAirport) reviewFields.endingAirport = endingAirport;
+  if (isInstitution) reviewFields.isInstitution = isInstitution;
+  if (institutionName) reviewFields.institutionName = institutionName;
+  if (hashtags) reviewFields.hashtags = hashtags;
+  if (content) reviewFields.content = content;
 
-    try {
-      let review = new Review(reviewFields);
-      // Crawling
-      axios.get(url).then(html => {
+  // Build crawlingData object
+  if (add.link) reviewFields.crawlingData.link = add.link;
+  if (add.image) reviewFields.crawlingData.image = add.image;
+  if (add.desc) reviewFields.crawlingData.desc = add.desc;
+
+  try {
+    let review = new Review(reviewFields);
+    // Crawling
+    axios
+      .get(url)
+      .then((html) => {
         const $ = cheerio.load(html.data);
-        const $bodyList = $('head');
-        $bodyList.each(function(i, elem) {
-          add.link = $(this).find('meta[property="og:url"]').attr('content'),
-          add.image = $(this).find('meta[property="og:image"]').attr('content'),
-          add.desc = $(this).find('meta[property="og:description"]').attr('content')
+        const $bodyList = $("head");
+        $bodyList.each(function (i, elem) {
+          (add.link = $(this).find('meta[property="og:url"]').attr("content")),
+            (add.image = $(this)
+              .find('meta[property="og:image"]')
+              .attr("content")),
+            (add.desc = $(this)
+              .find('meta[property="og:description"]')
+              .attr("content"));
 
           review.crawlingData.unshift(add);
           review.save();
+
+          res.json({ review, message: "후기 등록 성공" });
         });
       })
-     
-      res.json({ review, message: "후기 등록 성공" });
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send("Server Error");
-    }
+      .catch(function (error) {
+        console.log(error);
+        res.status(400).send({ error: "크롤링 실패." });
+      });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
   }
-);
+});
 
 /**
  *  @route PUT api/reviews/detail/:reviewId
  *  @desc Update review
  *  @access Private
  */
- router.put(
-  "/detail/:reviewId",
-  auth,
-  async (req, res) => {
-    const userId = req.body.user.id;
-    const reviewId = req.params.reviewId;
+router.put("/detail/:reviewId", auth, async (req, res) => {
+  const userId = req.body.user.id;
+  const reviewId = req.params.reviewId;
 
-    let review = await Review.findOne({ _id: reviewId });
+  let review = await Review.findOne({ _id: reviewId });
 
-    if (!review)
-      return res.status(400).json({ status: 400, msg: "리뷰가 없습니다." });
+  if (!review)
+    return res.status(400).json({ status: 400, msg: "리뷰가 없습니다." });
 
-    const owner = review.user;
+  const owner = review.user;
 
-    if (userId != owner) {
-      res.status(403).json({ msg: "Invalid access. no authenticated." });
-    }
+  if (userId != owner) {
+    res.status(403).json({ msg: "Invalid access. no authenticated." });
+  }
 
-    const {
-      title,
-      endingCountry,
-      endingAirport,
-      hashtags,
-      isInstitution,
-      institutionName,
-      content,
-    } = req.body;
-    
-    const add = {
-      link: null,
-      desc: null,
-      image: null,
-    };
+  const {
+    title,
+    endingCountry,
+    endingAirport,
+    hashtags,
+    isInstitution,
+    institutionName,
+    content,
+  } = req.body;
 
-    let url = req.body.content;
+  const add = {
+    link: null,
+    desc: null,
+    image: null,
+  };
 
-    if (title) review.title = title;
-    if (endingCountry) review.endingCountry = endingCountry;
-    if (endingAirport) review.endingAirport = endingAirport;
-    if (hashtags) review.hashtags = hashtags;
-    if (isInstitution) review.isInstitution = isInstitution;
-    if (institutionName) review.institutionName = institutionName;
-    if (content) review.content = content;
-    
-    try {
-      // Update
-      await review.save();
+  let url = req.body.content;
 
-      // Crawling
-      axios.get(url).then(html => {
+  if (title) review.title = title;
+  if (endingCountry) review.endingCountry = endingCountry;
+  if (endingAirport) review.endingAirport = endingAirport;
+  if (hashtags) review.hashtags = hashtags;
+  if (isInstitution) review.isInstitution = isInstitution;
+  if (institutionName) review.institutionName = institutionName;
+  if (content) review.content = content;
+
+  try {
+    // Update
+    await review.save();
+
+    // Crawling
+    axios
+      .get(url)
+      .then((html) => {
         const $ = cheerio.load(html.data);
-        const $bodyList = $('head');
-        $bodyList.each(function(i, elem) {
-          add.link = $(this).find('meta[property="og:url"]').attr('content'),
-          add.image = $(this).find('meta[property="og:image"]').attr('content'),
-          add.desc = $(this).find('meta[property="og:description"]').attr('content')
+        const $bodyList = $("head");
+        $bodyList.each(function (i, elem) {
+          (add.link = $(this).find('meta[property="og:url"]').attr("content")),
+            (add.image = $(this)
+              .find('meta[property="og:image"]')
+              .attr("content")),
+            (add.desc = $(this)
+              .find('meta[property="og:description"]')
+              .attr("content"));
 
-          review.crawlingData.splice(0,1);
+          review.crawlingData.splice(0, 1);
           review.crawlingData.unshift(add);
           review.save();
+
+          res.status(200).json({ review, message: "후기 수정 성공" });
         });
       })
-
-      res.status(200).json({ review, message: "후기 수정 성공" });
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error.");
-    }
+      .catch(function (error) {
+        console.log(error);
+        res.status(400).send({ error: "크롤링 실패." });
+      });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error.");
   }
-);
+});
 
 /**
  *  @route DELETE api/reviews/detail/:reviewId/
  *  @desc Delete review
  *  @access Private
  */
- router.delete("/detail/:reviewId", auth, async (req: Request, res: Response) => {
-  try {
-    const userId = req.body.user.id;
-    const reviewId = req.params.reviewId;
+router.delete(
+  "/detail/:reviewId",
+  auth,
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.body.user.id;
+      const reviewId = req.params.reviewId;
 
-    let review = await Review.findOne({ _id: reviewId });
-    const owner = review.user;
+      let review = await Review.findOne({ _id: reviewId });
+      const owner = review.user;
 
-    if (userId != owner) {
-      res.status(403).json({ msg: "Invalid access. no authenticated." });
+      if (userId != owner) {
+        res.status(403).json({ msg: "Invalid access. no authenticated." });
+      }
+
+      await review.remove();
+
+      res.status(200).json({ data: "deleted" });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Server Error");
     }
-
-    await review.remove();
-
-    res.status(200).json({ data: "deleted" });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server Error");
   }
-});
+);
 
 module.exports = router;
