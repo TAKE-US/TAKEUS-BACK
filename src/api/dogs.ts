@@ -7,8 +7,8 @@ import { IDogInputDTO } from "../interfaces/IDog";
 import { imageFilter } from "../utils/filter";
 import { calculateSKipAndLimit } from "../utils/paging";
 
-import aws from "../middleware/aws";
 import auth from "../middleware/auth";
+import imageUpload from "../middleware/imageUpload";
 
 const router = Router();
 
@@ -91,11 +91,11 @@ router.get("/search/:endingAirport", async (req: Request, res: Response) => {
       .sort({ registerDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
-    
+
     const totalNum = await Dog.countDocuments({
       endingAirport: req.params.endingAirport,
       status: "waiting",
-    }); 
+    });
 
     const response = { data: dogs, totalNum: totalNum };
 
@@ -115,7 +115,7 @@ router.post(
   "/",
   upload.array("photos", 5),
   auth,
-  aws.imageUploadToS3,
+  imageUpload,
   async (req, res) => {
     const {
       endingCountry,
@@ -164,8 +164,6 @@ router.post(
       // Create
       let dog = new Dog(dogFields);
       await dog.save();
-
-      console.log("Upload Success!");
 
       res.status(200).json(dog);
     } catch (err) {
@@ -222,7 +220,7 @@ router.put(
   "/detail/:dogId",
   upload.array("photos", 5),
   auth,
-  aws.imageUploadToS3,
+  imageUpload,
   async (req, res) => {
     const userId = req.body.user.id;
     const dogId = req.params.dogId;
@@ -279,8 +277,6 @@ router.put(
     try {
       // Update
       await dog.save();
-
-      console.log("Upload Success!");
 
       res.status(200).json(dog);
     } catch (err) {
