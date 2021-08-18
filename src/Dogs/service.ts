@@ -16,8 +16,10 @@ class DogService {
       .limit(limit);
     const totalNum = await Dog.countDocuments({});
 
-    return { data: dogs, totalNum: totalNum };
+    return { statusCode: 200, json: { data: dogs, totalNum: totalNum } };
   }
+
+  async readOne(dogId) {}
 }
 
 export default new DogService();
