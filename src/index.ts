@@ -1,6 +1,14 @@
 import express from "express";
-const app = express();
+import cors from "cors";
 import connectDB from "./Loader/db";
+
+const app = express();
+
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 // Connect Database
 connectDB();
@@ -11,10 +19,10 @@ app.use(express.json());
 // Define Routes
 app.use("/api/dogs", require("./api/dogs"));
 app.use("/api/airports", require("./api/airports"));
-app.use("/api/users", require("./api/user"));
-app.use("/api/auth", require("./api/auth"));
 app.use("/api/reviews", require("./api/reviews"));
+app.use("/api/login", require("./api/login"));
 app.use("/api/email", require("./api/email"));
+app.use("/api/reports", require("./api/reports"));
 
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;

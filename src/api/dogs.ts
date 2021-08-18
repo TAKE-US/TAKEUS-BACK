@@ -4,11 +4,11 @@ import multer from "multer";
 import Dog from "../models/Dog";
 import { IDogInputDTO } from "../interfaces/IDog";
 
-import { imageFilter, cleanFolder } from "../utils/filter";
+import { imageFilter } from "../utils/filter";
 import { calculateSKipAndLimit } from "../utils/paging";
 
-import aws from "../middleware/aws";
 import auth from "../middleware/auth";
+import imageUpload from "../middleware/imageUpload";
 
 const router = Router();
 
@@ -91,11 +91,11 @@ router.get("/search/:endingAirport", async (req: Request, res: Response) => {
       .sort({ registerDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
-    
+
     const totalNum = await Dog.countDocuments({
       endingAirport: req.params.endingAirport,
       status: "waiting",
-    }); 
+    });
 
     const response = { data: dogs, totalNum: totalNum };
 
@@ -115,7 +115,7 @@ router.post(
   "/",
   upload.array("photos", 5),
   auth,
-  aws.imageUploadToS3,
+  imageUpload,
   async (req, res) => {
     const {
       endingCountry,
@@ -165,8 +165,6 @@ router.post(
       let dog = new Dog(dogFields);
       await dog.save();
 
-      cleanFolder(`${UPLOAD_PATH}/`);
-
       res.status(200).json(dog);
     } catch (err) {
       console.error(err.message);
@@ -182,6 +180,8 @@ router.post(
  */
 router.get("/my", auth, async (req: Request, res: Response) => {
   try {
+    const orderHash = { latest: -1, oldest: 1, undefined: 1 };
+    const order: any = req.query.order;
     const userId = req.body.user.id;
 
     const { page = 1, postNumInPage = 16 } = req.query;
@@ -195,7 +195,7 @@ router.get("/my", auth, async (req: Request, res: Response) => {
       user: userId,
       status: { $ne: "deleted" },
     })
-      .sort({ status: -1, registerDate: -1 })
+      .sort({ status: -1, registerDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
 
@@ -220,7 +220,7 @@ router.put(
   "/detail/:dogId",
   upload.array("photos", 5),
   auth,
-  aws.imageUploadToS3,
+  imageUpload,
   async (req, res) => {
     const userId = req.body.user.id;
     const dogId = req.params.dogId;
@@ -277,8 +277,6 @@ router.put(
     try {
       // Update
       await dog.save();
-
-      cleanFolder(`${UPLOAD_PATH}/`);
 
       res.status(200).json(dog);
     } catch (err) {

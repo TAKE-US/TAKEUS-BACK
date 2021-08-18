@@ -9,7 +9,7 @@ const DogSchema = new mongoose.Schema({
     type: String,
   },
   age: {
-    type: Number,
+    type: String,
   },
   weight: {
     type: Number,
@@ -48,19 +48,19 @@ const DogSchema = new mongoose.Schema({
     default: "waiting",
   },
   kakaotalkId: {
-    type: String,
+    type: [String],
   },
   phoneNumber: {
-    type: String,
+    type: [String],
   },
   instagram: {
-    type: String,
+    type: [String],
   },
   twitter: {
-    type: String,
+    type: [String],
   },
   facebook: {
-    type: String,
+    type: [String],
   },
   photos: {
     type: [String],
