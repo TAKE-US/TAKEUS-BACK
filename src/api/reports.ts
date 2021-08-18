@@ -21,7 +21,7 @@ router.post(
     } = req.body;
 
     const report = new Report({
-      user: user.id,
+      reportUser: user.id,
       targetUser: targetUser,
       targetReview: targetReview,
   })
