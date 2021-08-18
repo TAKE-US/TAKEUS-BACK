@@ -22,6 +22,7 @@ app.use("/api/airports", require("./api/airports"));
 app.use("/api/reviews", require("./api/reviews"));
 app.use("/api/login", require("./api/login"));
 app.use("/api/email", require("./api/email"));
+app.use("/api/reports", require("./api/reports"));
 
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
