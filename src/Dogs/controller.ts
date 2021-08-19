@@ -3,8 +3,6 @@ import DogService from "./service";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
-const router = Router();
-
 class DogController {
   async readAll(req: Request, res: Response) {
     // data의 입력과 출력만 있음.
@@ -36,6 +34,27 @@ class DogController {
           .send({ error: RM.INTERNAL_SERVER_ERROR });
       });
   }
+
+  async create(req: Request, res: Response) {
+
+  }
+
+  async update(req: Request, res: Response) {
+
+  }
+
+  async delete(req: Request, res: Response) {
+
+  }
+
+  async findMyDog(req: Request, res: Response) {
+
+  }
+
+  async search(req: Request, res: Response) {
+
+  }
+
 }
 
 export default new DogController();
