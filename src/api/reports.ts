@@ -26,19 +26,16 @@ router.post(
       targetReview: targetReview,
   })
 
-    console.log(report);
+  try {
+    await report.save();
 
-    try {
-      await report.save();
-
-      console.log("DB 저장완료");
-      res.status(200).json(report);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error.");
-    }
+    console.log("DB 저장완료");
+    res.status(200).json(report);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error.");
   }
-);
+});
 
 /**
  *  @route GET api/reports
@@ -48,7 +45,7 @@ router.post(
  router.get("/", async (req: Request, res: Response) => {
   try {
     
-    const reports = await Report.find().populate("targetUser").populate("targetReview").sort({"reportDate":-1});
+    const reports = await Report.find().populate("targetUser").populate("reportUser").populate("targetReview").sort({ reportDate:-1 });
     const totalNum = await Report.countDocuments({});
 
     res.status(200).json({ data: reports, totalNum: totalNum });
