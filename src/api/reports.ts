@@ -45,7 +45,11 @@ router.post(
  router.get("/", async (req: Request, res: Response) => {
   try {
     
-    const reports = await Report.find().populate("targetUser").populate("reportUser").populate("targetReview").sort({ reportDate:-1 });
+    const reports = await Report.find()
+      .populate("targetUser")
+      .populate("reportUser")
+      .populate("targetReview")
+      .sort({ reportDate:-1 });
     const totalNum = await Report.countDocuments({});
 
     res.status(200).json({ data: reports, totalNum: totalNum });
