@@ -25,21 +25,26 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     const orderHash = { latest: -1, oldest: 1, undefined: 1 };
 
+    // 1. Controller
     const order: any = req.query.order;
     const { page = 1, postNumInPage = 16 } = req.query;
 
+    // 2. Business logic
     const { skip, limit } = calculateSKipAndLimit(
       page as any as number,
       postNumInPage as any as number
     );
 
+    // 3. Data access layer
     const dogs = await Dog.find({ status: "waiting" })
       .sort({ registerDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
     const totalNum = await Dog.countDocuments({});
 
+    // 4. return data.
     res.status(200).json({ data: dogs, totalNum: totalNum });
+
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
