@@ -10,6 +10,10 @@ const ReportSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: "User",
   },
+  targetDog: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "Dog",
+  },
   targetReview: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: "Review",

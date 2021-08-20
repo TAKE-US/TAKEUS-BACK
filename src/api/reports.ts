@@ -17,19 +17,20 @@ router.post(
     const {
       user,
       targetUser,
+      targetDog,
       targetReview,
     } = req.body;
 
     const report = new Report({
       reportUser: user.id,
       targetUser: targetUser,
+      targetDog: targetDog,
       targetReview: targetReview,
   })
 
   try {
     await report.save();
 
-    console.log("DB 저장완료");
     res.status(200).json(report);
   } catch (err) {
     console.error(err.message);
@@ -48,6 +49,7 @@ router.post(
     const reports = await Report.find()
       .populate("targetUser")
       .populate("reportUser")
+      .populate("targetDog")
       .populate("targetReview")
       .sort({ reportDate:-1 });
     const totalNum = await Report.countDocuments({});
