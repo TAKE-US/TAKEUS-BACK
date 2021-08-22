@@ -70,10 +70,10 @@ class DogController {
       !neutralization ||
       !health ||
       !isInstitution ||
-      !institutionName || 
+      !institutionName ||
       !user
     ) {
-      res.status(SC.BAD_REQUEST).send({error : RM.NULL_VALUE});
+      res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE });
       return;
     }
 
@@ -95,24 +95,93 @@ class DogController {
       facebook,
       detail,
       photos,
-      user
-    }).then((result) => {
-      res.status(result.statusCode).send(result.json);
+      user,
     })
-    .catch((err) => {
-      console.log(err);
-      res
-        .status(SC.INTERNAL_SERVER_ERROR)
-        .send({ error: RM.INTERNAL_SERVER_ERROR });
-    })
-
-
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        console.log(err);
+        res
+          .status(SC.INTERNAL_SERVER_ERROR)
+          .send({ error: RM.INTERNAL_SERVER_ERROR });
+      });
   }
 
-  async update(req: Request, res: Response) {}
+  async update(req: Request, res: Response) {
+    const dogId = req.params.dogId;
+
+    const {
+      endingCountry,
+      endingAirport,
+      name,
+      gender,
+      age,
+      weight,
+      neutralization,
+      health,
+      isInstitution,
+      institutionName,
+      kakaotalkId,
+      phoneNumber,
+      instagram,
+      twitter,
+      facebook,
+      detail,
+      photos,
+      user,
+    } = req.body;
+
+    if (
+      !endingCountry ||
+      !endingAirport ||
+      !name ||
+      !gender ||
+      !weight ||
+      !neutralization ||
+      !health ||
+      !isInstitution ||
+      !institutionName ||
+      !user
+    ) {
+      res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE });
+      return;
+    }
+
+    DogService.update({
+      endingCountry,
+      endingAirport,
+      name,
+      gender,
+      age,
+      weight,
+      neutralization,
+      health,
+      isInstitution,
+      institutionName,
+      kakaotalkId,
+      phoneNumber,
+      instagram,
+      twitter,
+      facebook,
+      detail,
+      photos,
+      user,
+      dogId,
+    })
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        console.log(err);
+        res
+          .status(SC.INTERNAL_SERVER_ERROR)
+          .send({ error: RM.INTERNAL_SERVER_ERROR });
+      });
+  }
 
   async updateStatus(req: Request, res: Response) {
-    const {user, status} = req.body;
+    const { user, status } = req.body;
     const dogId = req.params.dogId;
 
     if (!(status == "waiting" || status == "done")) {
@@ -123,13 +192,13 @@ class DogController {
     DogService.updateStatus(user, dogId, status)
       .then((result) => {
         res.status(result.statusCode).send(result.json);
-    }).catch((err)=>{
-      console.log(err);
-      res.
-        status(SC.INTERNAL_SERVER_ERROR).
-        send({error : RM.INTERNAL_SERVER_ERROR});
-    })
-
+      })
+      .catch((err) => {
+        console.log(err);
+        res
+          .status(SC.INTERNAL_SERVER_ERROR)
+          .send({ error: RM.INTERNAL_SERVER_ERROR });
+      });
   }
 
   async delete(req: Request, res: Response) {}
@@ -138,7 +207,7 @@ class DogController {
     const { order = "latest", page = 1, postNumInPage = 16 } = req.query;
     const userId = req.body.user.id;
 
-    DogService.findMy(order, page, postNumInPage,userId)
+    DogService.findMy(order, page, postNumInPage, userId)
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })
@@ -147,7 +216,7 @@ class DogController {
         res
           .status(SC.INTERNAL_SERVER_ERROR)
           .send({ error: RM.INTERNAL_SERVER_ERROR });
-      })
+      });
   }
 
   async search(req: Request, res: Response) {

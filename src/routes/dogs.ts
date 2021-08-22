@@ -21,7 +21,7 @@ router.get("/deleted");
 router.post("/",upload.array("photos", 5),auth,imageUpload,DogController.create);
 
 router.put("/detail/:dogId/status",auth,DogController.updateStatus);
-router.put("/detail/:dogId",auth);
+router.put("/detail/:dogId",upload.array("photos", 5),auth,imageUpload,DogController.update);
 
 router.delete("/detail/:dogId",auth);
 

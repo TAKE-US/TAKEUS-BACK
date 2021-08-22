@@ -81,7 +81,59 @@ class DogService {
     return { statusCode: SC.SUCCESS, json: { data: dog } };
   }
 
-  async update() {}
+  async update({
+    endingCountry,
+    endingAirport,
+    name,
+    gender,
+    age,
+    weight,
+    neutralization,
+    health,
+    isInstitution,
+    institutionName,
+    kakaotalkId,
+    phoneNumber,
+    instagram,
+    twitter,
+    facebook,
+    detail,
+    photos,
+    user,
+    dogId,
+  }) {
+    let dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
+
+    if (!dog) {
+      return { statusCode: SC.NOT_FOUND, json: { error: RM.DOG_NOT_FOUND } };
+    }
+    const owner = dog.user;
+
+    if (user.id != owner) {
+      return { statusCode: SC.FORBIDDEN, json: { error: RM.NO_AUTHENTICATED } };
+    }
+
+    if (endingCountry) dog.endingCountry = endingCountry;
+    if (endingAirport) dog.endingAirport = endingAirport;
+    if (name) dog.name = name;
+    if (gender) dog.gender = gender;
+    if (age) dog.age = age;
+    if (weight) dog.weight = weight;
+    if (neutralization) dog.neutralization = neutralization;
+    if (health) dog.health = health;
+    if (isInstitution) dog.isInstitution = isInstitution;
+    if (institutionName) dog.institutionName = institutionName;
+    if (kakaotalkId) dog.kakaotalkId = kakaotalkId;
+    if (phoneNumber) dog.phoneNumber = phoneNumber;
+    if (instagram) dog.instagram = instagram;
+    if (twitter) dog.twitter = twitter;
+    if (facebook) dog.facebook = facebook;
+    if (detail) dog.detail = detail;
+    if (photos) dog.photos = photos;
+
+    await dog.save();
+    return { statusCode: SC.SUCCESS, json: { data: dog } };
+  }
 
   async updateStatus(user, dogId, status) {
     let dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
@@ -97,8 +149,8 @@ class DogService {
     }
 
     dog.status = status;
-    dog.save();
-    return { statusCode: SC.SUCCESS, json: {data: dog}}
+    await dog.save();
+    return { statusCode: SC.SUCCESS, json: { data: dog } };
   }
 
   async delete() {}
