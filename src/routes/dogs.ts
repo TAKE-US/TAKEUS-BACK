@@ -16,13 +16,13 @@ router.get("/", DogController.readAll);
 router.get("/detail/:dogId", DogController.readOne);
 router.get("/search/:endingAirport", DogController.search);
 router.get("/my",auth,DogController.findMy);
-router.get("/deleted");
+router.get("/deleted",DogController.searchDeleted);
 
 router.post("/",upload.array("photos", 5),auth,imageUpload,DogController.create);
 
 router.put("/detail/:dogId/status",auth,DogController.updateStatus);
 router.put("/detail/:dogId",upload.array("photos", 5),auth,imageUpload,DogController.update);
 
-router.delete("/detail/:dogId",auth);
+router.delete("/detail/:dogId",auth,DogController.delete);
 
 module.exports = router;

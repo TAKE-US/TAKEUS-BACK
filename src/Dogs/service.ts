@@ -153,7 +153,22 @@ class DogService {
     return { statusCode: SC.SUCCESS, json: { data: dog } };
   }
 
-  async delete() {}
+  async delete(user, dogId) {
+    let dog = await Dog.findOne({ _id: dogId });
+    
+    if (!dog) {
+      return { statusCode: SC.NOT_FOUND, json: { error: RM.DOG_NOT_FOUND } };
+    }
+    
+    const owner = dog.user;
+
+    if (user.id != owner) {
+      return { statusCode: SC.FORBIDDEN, json: { error: RM.NO_AUTHENTICATED } };
+    }
+    dog.status = "deleted";
+    await dog.save();
+    return { statusCode: SC.SUCCESS, json: { data: "deleted" } };
+  }
 
   async findMy(order, page, postNumInPage, userId) {
     const { skip, limit } = calculateSKipAndLimit(
@@ -193,6 +208,19 @@ class DogService {
     const totalNum = await Dog.countDocuments({
       endingAirport: airport,
       status: "waiting",
+    });
+
+    return { statusCode: SC.SUCCESS, json: { data: dogs, totalNum: totalNum } };
+  }
+
+  async searchDeleted() {
+
+    const dogs = await Dog.find({
+      status: "deleted"
+    })
+
+    const totalNum = await Dog.countDocuments({
+      status: "deleted",
     });
 
     return { statusCode: SC.SUCCESS, json: { data: dogs, totalNum: totalNum } };

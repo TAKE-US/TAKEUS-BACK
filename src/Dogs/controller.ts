@@ -201,7 +201,21 @@ class DogController {
       });
   }
 
-  async delete(req: Request, res: Response) {}
+  async delete(req: Request, res: Response) {
+    const user = req.body.user;
+    const dogId = req.params.dogId;
+
+    DogService.delete(user, dogId)
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        console.log(err);
+        res
+          .status(SC.INTERNAL_SERVER_ERROR)
+          .send({ error: RM.INTERNAL_SERVER_ERROR });
+      });
+  }
 
   async findMy(req: Request, res: Response) {
     const { order = "latest", page = 1, postNumInPage = 16 } = req.query;
@@ -224,6 +238,19 @@ class DogController {
     const airport = req.params.endingAirport;
 
     DogService.search(order, page, postNumInPage, airport)
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        console.log(err);
+        res
+          .status(SC.INTERNAL_SERVER_ERROR)
+          .send({ error: RM.INTERNAL_SERVER_ERROR });
+      });
+  }
+
+  async searchDeleted(req: Request, res: Response) {
+    DogService.searchDeleted()
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })
