@@ -26,7 +26,7 @@ class DogService {
     const dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
 
     if (!dog) {
-      return { statusCode: SC.NOT_FOUND, json: { msg: RM.DOG_NOT_FOUND } };
+      return { statusCode: SC.NOT_FOUND, json: { error: RM.DOG_NOT_FOUND } };
     }
 
     return { statusCode: SC.SUCCESS, json: { data: dog } };
@@ -78,14 +78,52 @@ class DogService {
     let dog = new Dog(dogFields);
     await dog.save();
 
-    return { statusCode: SC.SUCCESS, json: {data: dog}}
+    return { statusCode: SC.SUCCESS, json: { data: dog } };
   }
 
   async update() {}
 
+  async updateStatus(user, dogId, status) {
+    let dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
+
+    if (!dog) {
+      return { statusCode: SC.NOT_FOUND, json: { error: RM.DOG_NOT_FOUND } };
+    }
+
+    const owner = dog.user;
+
+    if (user.id != owner) {
+      return { statusCode: SC.FORBIDDEN, json: { error: RM.NO_AUTHENTICATED } };
+    }
+
+    dog.status = status;
+    dog.save();
+    return { statusCode: SC.SUCCESS, json: {data: dog}}
+  }
+
   async delete() {}
 
-  async findMy() {}
+  async findMy(order, page, postNumInPage, userId) {
+    const { skip, limit } = calculateSKipAndLimit(
+      page as number,
+      postNumInPage as number
+    );
+
+    const dogs = await Dog.find({
+      user: userId,
+      status: { $ne: "deleted" },
+    })
+      .sort({ status: -1, registerDate: orderHash[order] })
+      .skip(skip)
+      .limit(limit);
+
+    const totalNum = await Dog.countDocuments({
+      user: userId,
+      status: { $ne: "deleted" },
+    });
+
+    return { statusCode: SC.SUCCESS, json: { data: dogs, totalNum: totalNum } };
+  }
 
   async search(order, page, postNumInPage, airport) {
     const { skip, limit } = calculateSKipAndLimit(

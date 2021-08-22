@@ -15,12 +15,12 @@ const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
 router.get("/", DogController.readAll);
 router.get("/detail/:dogId", DogController.readOne);
 router.get("/search/:endingAirport", DogController.search);
-router.get("/my",auth,);
+router.get("/my",auth,DogController.findMy);
 router.get("/deleted");
 
 router.post("/",upload.array("photos", 5),auth,imageUpload,DogController.create);
 
-router.put("/detail/:dogId/status",auth);
+router.put("/detail/:dogId/status",auth,DogController.updateStatus);
 router.put("/detail/:dogId",auth);
 
 router.delete("/detail/:dogId",auth);

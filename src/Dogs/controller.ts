@@ -111,9 +111,44 @@ class DogController {
 
   async update(req: Request, res: Response) {}
 
+  async updateStatus(req: Request, res: Response) {
+    const {user, status} = req.body;
+    const dogId = req.params.dogId;
+
+    if (!(status == "waiting" || status == "done")) {
+      res.status(SC.BAD_REQUEST).send({ error: RM.STATUS_NOT_VALID });
+      return;
+    }
+
+    DogService.updateStatus(user, dogId, status)
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+    }).catch((err)=>{
+      console.log(err);
+      res.
+        status(SC.INTERNAL_SERVER_ERROR).
+        send({error : RM.INTERNAL_SERVER_ERROR});
+    })
+
+  }
+
   async delete(req: Request, res: Response) {}
 
-  async findMy(req: Request, res: Response) {}
+  async findMy(req: Request, res: Response) {
+    const { order = "latest", page = 1, postNumInPage = 16 } = req.query;
+    const userId = req.body.user.id;
+
+    DogService.findMy(order, page, postNumInPage,userId)
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        console.log(err);
+        res
+          .status(SC.INTERNAL_SERVER_ERROR)
+          .send({ error: RM.INTERNAL_SERVER_ERROR });
+      })
+  }
 
   async search(req: Request, res: Response) {
     const { order = "latest", page = 1, postNumInPage = 16 } = req.query;
