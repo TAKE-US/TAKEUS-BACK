@@ -2,6 +2,8 @@ const RM = {
     INTERNAL_SERVER_ERROR : "Internal Server Error!",
 
     DOG_NOT_FOUND : "Dog Not Found",
+
+    NO_CONTENTS : "The required information is missing."
 };
 
 export { RM };
