@@ -4,7 +4,7 @@ import auth from "../middleware/auth";
 
 const router = Router();
 
-router.get("/", DogController.readAll);
+router.get("/", auth, DogController.readAll);
 router.get("/detail/:dogId");
 router.get("/search/:endingAirports");
 router.get("/my",auth);
