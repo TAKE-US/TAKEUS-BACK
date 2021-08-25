@@ -12,6 +12,7 @@ const router = Router();
 const UPLOAD_PATH = "uploads";
 const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
 
+
 router.get("/", DogController.readAll);
 router.get("/detail/:dogId", DogController.readOne);
 router.get("/search/:endingAirport", DogController.search);
