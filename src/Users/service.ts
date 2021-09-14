@@ -1,12 +1,11 @@
-import { Request, Response, Router } from "express";
+import User from "../models/User";
+import { SC } from "../utils/statusCode";
+import { RM } from "../utils/responseMessage";
+
 import jwt from "jsonwebtoken";
 import axios from "axios";
 
 import config from "../config";
-
-const router = Router();
-
-import User from "../models/User";
 
 const findSocialIdentity = async (token, social) => {
   const urlHash = {
@@ -43,22 +42,30 @@ const findSocialIdentity = async (token, social) => {
   }
 };
 
-/**
- *  @route POST api/login
- *  @desc request login
- *  @access Public
- */
-router.post("/", async (req: Request, res: Response) => {
-  const { token, social } = req.body;
-  let identity;
-
-  identity = await findSocialIdentity(token, social);
-
-  if (!identity) {
-    res.status(400).json({ msg: "Invalid Access Token or Social" });
+class UserService {
+  async readAll() {
+    const users = await User.find();
+    return { statusCode: SC.SUCCESS, json: { data: users } };
   }
 
-  try {
+  async signIn(token, social) {
+    
+    if (!token || !social){
+        return {
+            statusCode: SC.UNAUTHORIZED,
+            json: { error: RM.NO_TOKEN },
+          };
+    }
+
+    let identity = await findSocialIdentity(token, social);
+
+    if (!identity) {
+      return {
+        statusCode: SC.BAD_REQUEST,
+        json: { error: RM.INVALID_LOGIN_REQUEST },
+      };
+    }
+
     // See if user exists
     let user = await User.findOne({ identity: identity });
 
@@ -79,31 +86,17 @@ router.post("/", async (req: Request, res: Response) => {
       },
     };
 
-    jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 }, (err, token) => {
-      if (err) throw err;
-      res.json({ token: token, id: user.id });
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
+    // jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 }, (err, token) => {
+    //   if (err) throw err;
+    //   console.log(token);
+    //   return {
+    //     statusCode: SC.SUCCESS,
+    //     json: { token: token, id: user.id },
+    //   };
+    // });
+    const jwtToken = jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 });
+    return { statusCode: SC.SUCCESS, json: { token: jwtToken, id: user.id } };
   }
-});
+}
 
-/**
- *  @route Get api/login
- *  @desc request login
- *  @access Public
- */
-router.get("/", async (req: Request, res: Response) => {
-  try {
-    const users = await User.find();
-
-    const response = { data: users };
-    res.status(200).json(response);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server Error");
-  }
-});
-
-module.exports = router;
+export default new UserService();
