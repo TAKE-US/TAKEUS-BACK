@@ -3,6 +3,6 @@ import AirportController from "../Airports/controller";
 
 const router = Router();
 
-router.get("/", AirportController.readAll);
+router.get("/country", AirportController.readAll);
 
 module.exports = router;
