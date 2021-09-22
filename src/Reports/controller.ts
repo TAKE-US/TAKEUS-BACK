@@ -30,7 +30,14 @@ class ReportController {
       !user ||
       !targetUser
     ) {
-      res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE });
+      res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE_USER });
+      return;
+    }
+
+    if (
+      !targetDog && !targetReview
+    ){
+      res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE_TARGET});
       return;
     }
 

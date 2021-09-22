@@ -11,6 +11,11 @@ const RM = {
 
     WRONG_ID : "Dog id is wrong",
     NULL_VALUE : "Null value is in request body",
+    NULL_VALUE_USER : "There is no user or targetUser in the request body.",
+    NULL_VALUE_TARGET : "There is no TargetDog or targetReview in the request body.",
+    INVALID_DOG_ID : "Dog id is not valid.",
+    INVALID_REVIEW_ID : "Review id is not valid",
+    DUPLICATE_REPORT : "It's a duplicate report.",
     STATUS_NOT_VALID : "Status is not valid",
     NO_AUTHENTICATED : "Not authenticated",
 
