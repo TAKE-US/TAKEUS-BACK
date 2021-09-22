@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import connectDB from "./Loader/db";
+import config from "./config";
+
 
 const app = express();
 
@@ -28,10 +30,10 @@ app.use(function (err, req, res, next) {
 });
 
 app
-  .listen(5000, () => {
+  .listen(config.port, () => {
     console.log(`
     ################################################
-    🛡️  Server listening on port: 5000 🛡️
+    🛡️  Server listening on port: ${config.port} 🛡️
     ################################################
   `);
   })
