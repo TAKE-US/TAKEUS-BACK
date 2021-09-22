@@ -29,7 +29,7 @@ class ReviewController {
         console.log(err);
 
         if (err.name === "CastError") {
-          res.status(SC.BAD_REQUEST).send({ error: RM.WRONG_ID });
+          res.status(SC.BAD_REQUEST).send({ error: RM.INVALID_REVIEW_ID });
         } else {
           res
             .status(SC.INTERNAL_SERVER_ERROR)
