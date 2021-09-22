@@ -9,7 +9,6 @@ const RM = {
 
     NO_CONTENTS : "The required information is missing.",
 
-    WRONG_ID : "Dog id is wrong",
     NULL_VALUE : "Null value is in request body",
     NULL_VALUE_USER : "There is no user or targetUser in the request body.",
     NULL_VALUE_TARGET : "There is no TargetDog or targetReview in the request body.",
