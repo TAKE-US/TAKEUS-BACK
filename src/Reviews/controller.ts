@@ -54,6 +54,22 @@ class ReviewController {
       });
   }
 
+  async filter(req: Request, res: Response) {
+    const { order = "latest", hashtags, page = 1, postNumInPage = 7 } = req.query;
+    const endingAirport = req.params.endingAirport;
+
+    ReviewService.filter(order, hashtags, page, postNumInPage, endingAirport)
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        console.log(err);
+        res
+          .status(SC.INTERNAL_SERVER_ERROR)
+          .send({ error: RM.INTERNAL_SERVER_ERROR });
+      });
+  }
+
   async findMy(req: Request, res: Response) {
     const { order = "latest", page = 1, postNumInPage = 5 } = req.query;
     const userId = req.body.user.id;
