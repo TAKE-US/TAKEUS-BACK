@@ -8,6 +8,7 @@ const router = Router();
 router.get("/", ReviewController.readAll);
 router.get("/detail/:reviewId", ReviewController.readOne);
 router.get("/:keyword", ReviewController.searchKeyword);
+router.get("/search/:endingAirport", ReviewController.filter);
 router.get("/list/my",auth,ReviewController.findMy);
 
 router.post("/",auth,ReviewController.create);

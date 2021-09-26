@@ -48,10 +48,33 @@ class ReviewService {
       .sort({ writeDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
+
     const totalNum = await Review.countDocuments({}).or([
       { endingAirport: keyword },
       { hashtags: keyword },
     ]);
+
+    return { statusCode: SC.SUCCESS, json: { data: reviews, totalNum: totalNum } };
+  }
+
+  async filter(order, hashtags, page, postNumInPage, endingAirport) {
+    const { skip, limit } = calculateSKipAndLimit(
+      page as number,
+      postNumInPage as number
+    );
+
+    const reviews = await Review.find({
+      endingAirport: endingAirport,
+      hashtags: hashtags,
+    })
+    .sort({ writeDate: orderHash[order] })
+    .skip(skip)
+    .limit(limit);
+
+    const totalNum = await Review.countDocuments({
+      endingAirport: endingAirport,
+      hashtags: hashtags,
+    });
 
     return { statusCode: SC.SUCCESS, json: { data: reviews, totalNum: totalNum } };
   }
