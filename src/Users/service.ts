@@ -15,31 +15,34 @@ const findSocialIdentity = async (token, social) => {
   };
 
   let identity;
+  let response;
 
   try {
-    const response = await axios({
+    response = await axios({
       method: "get",
       url: urlHash[social],
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    if (social === "kakao") {
-      if (response.data.kakao_account.email) {
-        identity = response.data.kakao_account.email;
-      } else {
-        identity = response.data.id;
-      }
-    } else if (social === "google") {
-      identity = response.data.email;
-    } else if (social === "naver") {
-      identity = response.data.response.id;
-    }
-    return identity;
   } catch (e) {
     console.log(e.data);
+    return null
   }
+
+  if (social === "kakao") {
+    identity = response.data.kakao_account.email;
+  } else if (social === "google") {
+    identity = response.data.email;
+  } else if (social === "naver") {
+    identity = response.data.response.email;
+  }
+
+  if (!identity) {
+    identity = "NoEmail";
+  }
+
+  return identity;
 };
 
 class UserService {
@@ -49,12 +52,11 @@ class UserService {
   }
 
   async signIn(token, social) {
-    
-    if (!token || !social){
-        return {
-            statusCode: SC.UNAUTHORIZED,
-            json: { error: RM.NO_TOKEN },
-          };
+    if (!token || !social) {
+      return {
+        statusCode: SC.UNAUTHORIZED,
+        json: { error: RM.NO_TOKEN },
+      };
     }
 
     let identity = await findSocialIdentity(token, social);
@@ -63,6 +65,13 @@ class UserService {
       return {
         statusCode: SC.BAD_REQUEST,
         json: { error: RM.INVALID_LOGIN_REQUEST },
+      };
+    }
+
+    if (identity === "NoEmail") {
+      return {
+        statusCode: SC.BAD_REQUEST,
+        json: { error: RM.NO_EMAIL_AGREEMENT },
       };
     }
 
@@ -96,6 +105,11 @@ class UserService {
     // });
     const jwtToken = jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 });
     return { statusCode: SC.SUCCESS, json: { token: jwtToken, id: user.id } };
+  }
+
+  async findEmailById(id){
+    const user = await User.findOne({ _id: id });
+    return { statusCode: SC.SUCCESS, json: { email: user.identity } };
   }
 }
 

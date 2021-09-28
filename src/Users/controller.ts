@@ -31,6 +31,18 @@ class UserController {
           .send({ error: RM.INTERNAL_SERVER_ERROR });
       });
   }
+
+  async find(req: Request, res: Response) {
+    const user_id = req.body.user.id;
+    UserService.findEmailById(user_id).then((result) => {
+      console.log(result);
+      res.status(result.statusCode).send(result.json);
+    });
+    
+    
+    // console.log(user);
+
+  }
 }
 
 export default new UserController();

@@ -18,6 +18,8 @@ const RM = {
     STATUS_NOT_VALID : "Status is not valid",
     NO_AUTHENTICATED : "Not authenticated",
 
+    NO_EMAIL_AGREEMENT : "Can't find email. Please check if you have agreed to the email",
+
 };
 
 export { RM };
