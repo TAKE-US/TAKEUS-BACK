@@ -20,7 +20,8 @@ class ReportService {
     };
   }
 
-  async create({ user, targetUser, targetDog, targetReview }) {
+  async create({ user, targetDog, targetReview }) {
+
     if (targetDog) {
       let dog = null;
       try {
@@ -54,7 +55,7 @@ class ReportService {
       } else {
         const report = new Report({
           reportUser: user.id,
-          targetUser: targetUser,
+          targetUser: dog.user,
           targetDog: targetDog,
         });
 
@@ -98,7 +99,7 @@ class ReportService {
       } else {
         const report = new Report({
           reportUser: user.id,
-          targetUser: targetUser,
+          targetUser: review.user,
           targetReview: targetReview,
         });
 

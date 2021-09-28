@@ -5,7 +5,6 @@ import { RM } from "../utils/responseMessage";
 
 class ReportController {
   async readAll(req: Request, res: Response) {
-    
     ReportService.readAll()
       .then((result) => {
         res.status(result.statusCode).send(result.json);
@@ -19,31 +18,20 @@ class ReportController {
   }
 
   async create(req: Request, res: Response) {
-    const {
-      user,
-      targetUser,
-      targetDog,
-      targetReview,
-    } = req.body;
+    const { user, targetDog, targetReview } = req.body;
 
-    if (
-      !user ||
-      !targetUser
-    ) {
+    if (!user) {
       res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE_USER });
       return;
     }
 
-    if (
-      !targetDog && !targetReview
-    ){
-      res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE_TARGET});
+    if (!targetDog && !targetReview) {
+      res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE_TARGET });
       return;
     }
 
     ReportService.create({
       user,
-      targetUser,
       targetDog,
       targetReview,
     })
