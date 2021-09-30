@@ -30,6 +30,8 @@ const findSocialIdentity = async (token, social) => {
     return null
   }
 
+  console.log(response);
+
   if (social === "kakao") {
     identity = response.data.kakao_account.email;
   } else if (social === "google") {
