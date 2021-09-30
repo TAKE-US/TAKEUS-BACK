@@ -4,7 +4,7 @@ import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
 class ReviewController {
-  async readAll(req: Request, res: Response) {
+  async readAll(req: Request, res: Response, next) {
     const { order = "latest", page = 1, postNumInPage = 7 } = req.query;
 
     ReviewService.readAll(order, page, postNumInPage)
@@ -12,14 +12,11 @@ class ReviewController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async readOne(req: Request, res: Response) {
+  async readOne(req: Request, res: Response, next) {
     const reviewId = req.params.reviewId;
     ReviewService.readOne(reviewId)
       .then((result) => {
@@ -31,14 +28,12 @@ class ReviewController {
         if (err.name === "CastError") {
           res.status(SC.BAD_REQUEST).send({ error: RM.INVALID_REVIEW_ID });
         } else {
-          res
-            .status(SC.INTERNAL_SERVER_ERROR)
-            .send({ error: RM.INTERNAL_SERVER_ERROR });
+          next(err);
         }
       });
   }
 
-  async searchKeyword(req: Request, res: Response) {
+  async searchKeyword(req: Request, res: Response, next) {
     const { order = "latest", page = 1, postNumInPage = 7 } = req.query;
     const keyword = req.params.keyword;
 
@@ -47,14 +42,11 @@ class ReviewController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async filter(req: Request, res: Response) {
+  async filter(req: Request, res: Response, next) {
     const { order = "latest", hashtags, page = 1, postNumInPage = 7 } = req.query;
     const endingAirport = req.params.endingAirport;
 
@@ -63,14 +55,11 @@ class ReviewController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async findMy(req: Request, res: Response) {
+  async findMy(req: Request, res: Response, next) {
     const { order = "latest", page = 1, postNumInPage = 5 } = req.query;
     const userId = req.body.user.id;
 
@@ -79,14 +68,11 @@ class ReviewController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next) {
     const {
       title,
       endingCountry,
@@ -126,14 +112,11 @@ class ReviewController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next) {
     const reviewId = req.params.reviewId;
 
     const {
@@ -176,14 +159,11 @@ class ReviewController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response, next) {
     const user = req.body.user;
     const reviewId = req.params.reviewId;
 
@@ -192,10 +172,7 @@ class ReviewController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 }

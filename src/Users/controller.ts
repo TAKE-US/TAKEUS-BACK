@@ -4,20 +4,17 @@ import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
 class UserController {
-  async readAll(req: Request, res: Response) {
+  async readAll(req: Request, res: Response, next) {
     UserService.readAll()
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async signIn(req: Request, res: Response) {
+  async signIn(req: Request, res: Response, next) {
     const { token, social } = req.body;
 
     UserService.signIn(token, social)
@@ -25,14 +22,11 @@ class UserController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async find(req: Request, res: Response) {
+  async find(req: Request, res: Response, next) {
     const user_id = req.body.user.id;
     UserService.findEmailById(user_id).then((result) => {
       console.log(result);

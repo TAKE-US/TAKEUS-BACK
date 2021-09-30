@@ -2,9 +2,11 @@ import { Router, Request, Response } from "express";
 import DogService from "./service";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
+import { nextTick } from "process";
+import { next } from "cheerio/lib/api/traversing";
 
 class DogController {
-  async readAll(req: Request, res: Response) {
+  async readAll(req: Request, res: Response, next) {
     // data의 입력과 출력만 있음.
     const { order = "latest", page = 1, postNumInPage = 16 } = req.query;
 
@@ -13,33 +15,26 @@ class DogController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async readOne(req: Request, res: Response) {
+  async readOne(req: Request, res: Response, next) {
     const dogId = req.params.dogId;
     DogService.readOne(dogId)
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-
         if (err.name === "CastError") {
           res.status(SC.BAD_REQUEST).send({ error: RM.INVALID_DOG_ID });
         } else {
-          res
-            .status(SC.INTERNAL_SERVER_ERROR)
-            .send({ error: RM.INTERNAL_SERVER_ERROR });
+          next(err);
         }
       });
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next) {
     const {
       endingCountry,
       endingAirport,
@@ -101,14 +96,11 @@ class DogController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next) {
     const dogId = req.params.dogId;
 
     const {
@@ -173,14 +165,11 @@ class DogController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async updateStatus(req: Request, res: Response) {
+  async updateStatus(req: Request, res: Response, next) {
     const { user, status } = req.body;
     const dogId = req.params.dogId;
 
@@ -194,14 +183,11 @@ class DogController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response, next) {
     const user = req.body.user;
     const dogId = req.params.dogId;
 
@@ -210,14 +196,11 @@ class DogController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async findMy(req: Request, res: Response) {
+  async findMy(req: Request, res: Response, next) {
     const { order = "latest", page = 1, postNumInPage = 16 } = req.query;
     const userId = req.body.user.id;
 
@@ -226,14 +209,11 @@ class DogController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async search(req: Request, res: Response) {
+  async search(req: Request, res: Response, next) {
     const { order = "latest", page = 1, postNumInPage = 16 } = req.query;
     const airport = req.params.endingAirport;
 
@@ -242,23 +222,17 @@ class DogController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async searchDeleted(req: Request, res: Response) {
+  async searchDeleted(req: Request, res: Response, next) {
     DogService.searchDeleted()
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 }
