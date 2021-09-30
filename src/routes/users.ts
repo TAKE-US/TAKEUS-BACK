@@ -6,6 +6,5 @@ const router = Router();
 
 router.get("/login", UserController.readAll);
 router.post("/login", UserController.signIn);
-router.get("/detail", auth, UserController.find);
 
 module.exports = router;

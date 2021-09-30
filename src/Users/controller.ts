@@ -25,18 +25,6 @@ class UserController {
         next(err);
       });
   }
-
-  async find(req: Request, res: Response, next) {
-    const user_id = req.body.user.id;
-    UserService.findEmailById(user_id).then((result) => {
-      console.log(result);
-      res.status(result.statusCode).send(result.json);
-    });
-    
-    
-    // console.log(user);
-
-  }
 }
 
 export default new UserController();

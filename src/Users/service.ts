@@ -7,14 +7,13 @@ import axios from "axios";
 
 import config from "../config";
 
-const findSocialIdentity = async (token, social) => {
+const requestSocialLogin = async (token, social) => {
   const urlHash = {
     kakao: "https://kapi.kakao.com/v2/user/me",
     google: "https://www.googleapis.com/oauth2/v2/userinfo",
     naver: "https://openapi.naver.com/v1/nid/me",
   };
 
-  let identity;
   let response;
 
   try {
@@ -26,25 +25,10 @@ const findSocialIdentity = async (token, social) => {
       },
     });
   } catch (e) {
-    console.log(e.data);
-    return null
+    return null;
   }
 
-  console.log(response);
-
-  if (social === "kakao") {
-    identity = response.data.kakao_account.email;
-  } else if (social === "google") {
-    identity = response.data.email;
-  } else if (social === "naver") {
-    identity = response.data.response.email;
-  }
-
-  if (!identity) {
-    identity = "NoEmail";
-  }
-
-  return identity;
+  return response;
 };
 
 class UserService {
@@ -61,16 +45,24 @@ class UserService {
       };
     }
 
-    let identity = await findSocialIdentity(token, social);
-
-    if (!identity) {
+    let email;
+    let response = await requestSocialLogin(token, social);
+    if (!response) {
       return {
         statusCode: SC.BAD_REQUEST,
         json: { error: RM.INVALID_LOGIN_REQUEST },
       };
     }
 
-    if (identity === "NoEmail") {
+    if (social === "kakao") {
+      email = response.data.kakao_account.email;
+    } else if (social === "google") {
+      email = response.data.email;
+    } else if (social === "naver") {
+      email = response.data.response.email;
+    }
+
+    if (!email) {
       return {
         statusCode: SC.BAD_REQUEST,
         json: { error: RM.NO_EMAIL_AGREEMENT },
@@ -78,13 +70,13 @@ class UserService {
     }
 
     // See if user exists
-    let user = await User.findOne({ identity: identity });
+    let user = await User.findOne({ identity: email });
 
     if (user) {
       user.update({ $currentDate: { lastLoginDate: true } });
     } else {
       user = new User({
-        identity,
+        email,
         social,
       });
       await user.save();
@@ -97,21 +89,8 @@ class UserService {
       },
     };
 
-    // jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 }, (err, token) => {
-    //   if (err) throw err;
-    //   console.log(token);
-    //   return {
-    //     statusCode: SC.SUCCESS,
-    //     json: { token: token, id: user.id },
-    //   };
-    // });
     const jwtToken = jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 });
-    return { statusCode: SC.SUCCESS, json: { token: jwtToken, id: user.id } };
-  }
-
-  async findEmailById(id){
-    const user = await User.findOne({ _id: id });
-    return { statusCode: SC.SUCCESS, json: { email: user.identity } };
+    return { statusCode: SC.SUCCESS, json: { token: jwtToken, id: user.id, email: user.identity } };
   }
 }
 
