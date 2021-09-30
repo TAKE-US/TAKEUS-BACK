@@ -36,6 +36,8 @@
     "nodemon": "^2.0.9",
     "puppeteer": "^10.1.0",
     "request": "^2.88.2",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5",
     "yarn": "^1.22.10"
   },
   "devDependencies": {

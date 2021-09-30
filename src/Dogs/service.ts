@@ -23,6 +23,7 @@ class DogService {
   }
 
   async readOne(dogId) {
+    throw new Error("test Error");
     const dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
 
     if (!dog) {
