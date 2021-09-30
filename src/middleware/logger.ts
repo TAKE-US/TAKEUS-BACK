@@ -1,3 +1,6 @@
+import jwt from "jsonwebtoken";
+import config from "../config";
+
 import { logger } from "../Logger/logger";
 
 export default (req, res, next) => {
@@ -6,7 +9,14 @@ export default (req, res, next) => {
         const originalUrl = req.originalUrl;
         const method = req.method;
 
-        logger.info("method : " + method + " ip : " + ip + " originalUrl : " + originalUrl + "/" );
+        const token = req.header("x-auth-token");
+        let user;
+        if (token) {
+            const decoded = jwt.verify(token, config.jwtSecret);
+            user = decoded.user.id;
+        }
+
+        logger.info("method : " + method + " ip : " + ip + " originalUrl : " + originalUrl + " user : " + user );
     } catch(e){
         logger.error("error : " + e);
     }
