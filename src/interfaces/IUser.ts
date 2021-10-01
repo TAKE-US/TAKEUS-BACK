@@ -1,5 +1,5 @@
 export interface IUser {
-  identiity: string;
+  identity: string;
   social: string;
   createdDate: Date;
   lastLoginDate: Date;

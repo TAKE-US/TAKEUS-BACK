@@ -4,20 +4,17 @@ import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
 class ReportController {
-  async readAll(req: Request, res: Response) {
+  async readAll(req: Request, res: Response, next) {
     ReportService.readAll()
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next) {
     const { user, targetDog, targetReview } = req.body;
 
     if (!user) {
@@ -39,10 +36,7 @@ class ReportController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 }

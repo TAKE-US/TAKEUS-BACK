@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import EmailService from "./service";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
+import { next } from "cheerio/lib/api/traversing";
 
 class EmailController {
-  async sendMail(req: Request, res: Response) {
+  async sendMail(req: Request, res: Response, next) {
     const { name, email, text, user } = req.body;
 
     if (!name || !email || !text || !user) {
@@ -16,10 +17,7 @@ class EmailController {
         res.status(result.statusCode).send(result.json);
       })
       .catch((err) => {
-        console.log(err);
-        res
-          .status(SC.INTERNAL_SERVER_ERROR)
-          .send({ error: RM.INTERNAL_SERVER_ERROR });
+        next(err);
       });
   }
 }
