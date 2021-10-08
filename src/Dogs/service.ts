@@ -1,4 +1,5 @@
 import Dog from "../models/Dog";
+import Report from "../models/Report";
 import { IDogInputDTO } from "../interfaces/IDog";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
@@ -22,11 +23,16 @@ class DogService {
     return { statusCode: SC.SUCCESS, json: { data: dogs, totalNum: totalNum } };
   }
 
-  async readOne(dogId) {
+  async readOne(dogId, user) {
     const dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
 
     if (!dog) {
       return { statusCode: SC.NOT_FOUND, json: { error: RM.DOG_NOT_FOUND } };
+    }
+
+    if (user) {
+      const isReport = await Report.findOne({ targetDog: dogId, reportUser : user.id });
+      return { statusCode: SC.SUCCESS, json: { data: dog, isReport: Boolean(isReport) }};
     }
 
     return { statusCode: SC.SUCCESS, json: { data: dog } };
