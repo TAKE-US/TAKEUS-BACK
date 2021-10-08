@@ -32,8 +32,8 @@ app.use(function (err, req, res, next) {
   
   var mailOption = {
     from : config.mailuser,
-    to : config.mailuser,
-    subject : 'error test',
+    to : '"madogisa12@naver.com","olul95@naver.com"',
+    subject : '서버 에러 발생',
     text : err.message
   };
 
