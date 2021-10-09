@@ -21,7 +21,9 @@ class DogController {
 
   async readOne(req: Request, res: Response, next) {
     const dogId = req.params.dogId;
-    DogService.readOne(dogId)
+    const user = req.body.user;
+
+    DogService.readOne(dogId, user)
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })

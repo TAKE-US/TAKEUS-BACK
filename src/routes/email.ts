@@ -4,6 +4,6 @@ import auth from "../middleware/auth";
 
 const router = Router();
 
-router.post("/", auth, EmailController.sendMail);
+router.post("/", EmailController.sendEmail);
 
 module.exports = router;

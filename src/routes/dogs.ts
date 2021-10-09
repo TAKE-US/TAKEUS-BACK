@@ -3,6 +3,7 @@ import multer from "multer";
 
 import DogController from "../Dogs/controller";
 import auth from "../middleware/auth";
+import isLogin from "../middleware/isLogin";
 import imageUpload from "../middleware/imageUpload";
 
 import { imageFilter } from "../utils/filter";
@@ -14,7 +15,7 @@ const upload = multer({ dest: `${UPLOAD_PATH}/`, fileFilter: imageFilter });
 
 
 router.get("/", DogController.readAll);
-router.get("/detail/:dogId", DogController.readOne);
+router.get("/detail/:dogId", isLogin, DogController.readOne);
 router.get("/search/:endingAirport", DogController.search);
 router.get("/my",auth,DogController.findMy);
 router.get("/deleted",DogController.searchDeleted);
