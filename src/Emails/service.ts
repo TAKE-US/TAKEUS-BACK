@@ -16,8 +16,7 @@ class EmailService {
     let mailOptions = {
       from: config.mailuser,              
       to: config.mailuser,      // 수신 메일 주소
-      cc: email,                // 사용자 메일 주소
-      subject: name,            // 메일 제목
+      subject: name + email,    // 메일 제목
       text: text,               // 메일 내용
     };
 
