@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+
 import connectDB from "./Loader/db";
 import config from "./config";
 import requestLog from "./middleware/logger";
@@ -7,6 +9,8 @@ import { logger } from "./Logger/logger";
 import { RM } from "./utils/responseMessage";
 
 const app = express();
+
+app.use(helmet());
 
 const corsOptions = {
   origin: "*",
