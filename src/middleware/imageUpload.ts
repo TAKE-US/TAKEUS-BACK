@@ -7,13 +7,11 @@ import { imageFilter } from "../utils/filter";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
-import { RM } from "../utils/responseMessage";
-import { SC } from "../utils/statusCode";
-
 const URL = config.fileUploadServerUrl;
 
 // things for file upload.
 const UPLOAD_PATH = "uploads";
+
 const upload = multer({
   dest: `${UPLOAD_PATH}/`,
   fileFilter: imageFilter,
@@ -63,6 +61,7 @@ export default (req, res, next) => {
             console.error(err.message);
             console.log(err);
             next(err);
+          }
         }
       );
     }
