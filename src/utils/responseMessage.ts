@@ -1,5 +1,6 @@
 const RM = {
     INTERNAL_SERVER_ERROR : "Internal Server Error!",
+    FAIL_TO_IMAGE_UPLOAD : "Internal Error : fail to upload image!",
 
     DOG_NOT_FOUND : "Dog Not Found",
     REVIEW_NOT_FOUND : "Review Not Found",

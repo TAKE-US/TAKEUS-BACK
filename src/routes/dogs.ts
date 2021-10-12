@@ -2,13 +2,14 @@ import { Router, Request, Response } from "express";
 
 import DogController from "../Dogs/controller";
 import auth from "../middleware/auth";
+import isLogin from "../middleware/isLogin";
 import imageUpload from "../middleware/imageUpload";
 
 
 const router = Router();
 
 router.get("/", DogController.readAll);
-router.get("/detail/:dogId", DogController.readOne);
+router.get("/detail/:dogId", isLogin, DogController.readOne);
 router.get("/search/:endingAirport", DogController.search);
 router.get("/my",auth,DogController.findMy);
 router.get("/deleted",DogController.searchDeleted);

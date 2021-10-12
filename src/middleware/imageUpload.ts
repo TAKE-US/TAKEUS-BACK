@@ -7,6 +7,9 @@ import { imageFilter } from "../utils/filter";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
+import { RM } from "../utils/responseMessage";
+import { SC } from "../utils/statusCode";
+
 const URL = config.fileUploadServerUrl;
 
 // things for file upload.
@@ -50,15 +53,16 @@ export default (req, res, next) => {
         { url: URL, formData: formData },
         (err, httpResponse, body) => {
           try {
+            if (!body) {
+              throw new Error(RM.FAIL_TO_IMAGE_UPLOAD);
+            }
             const data = JSON.parse(body);
             req.body.photos = data.data;
             next();
           } catch (error) {
-            console.error(error.message);
-            res
-              .status(500)
-              .send({ error: "Internal Error : fail to upload image!" });
-          }
+            console.error(err.message);
+            console.log(err);
+            next(err);
         }
       );
     }
