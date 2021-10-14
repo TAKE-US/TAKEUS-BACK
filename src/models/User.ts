@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { IUser } from "../interfaces/IUser";
 
 const UserSchema = new mongoose.Schema({
-  identity: {
+  email: {
     type: String,
     required: true,
     unique: true,

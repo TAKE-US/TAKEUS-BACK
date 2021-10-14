@@ -25,6 +25,18 @@ class UserController {
         next(err);
       });
   }
+
+  async naverLogin(req: Request, res: Response, next) {
+    const { code, state } = req.query;
+
+    UserService.naverLogin(code, state)
+    .then((result) => {
+      res.status(result.statusCode).send(result.json);
+    })
+    .catch((err) => {
+      next(err);
+    });
+  }
 }
 
 export default new UserController();
