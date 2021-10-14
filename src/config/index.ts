@@ -31,4 +31,11 @@ export default {
   mailpass: process.env.MAIL_PASS,
 
   fileUploadServerUrl: process.env.FILE_UPLOAD_SERVER_URL,
+
+  /**
+   * naver client id, secret
+   */
+  client_id : process.env.NAVER_CLIENT_ID,
+  client_secret : process.env.NAVER_CLIENT_SECRET,
+
 };
