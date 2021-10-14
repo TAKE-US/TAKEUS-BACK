@@ -42,7 +42,9 @@ app.use(function (err, req, res, next) {
     text : err.message
   };
 
-  // transporter.sendMail(mailOption);
+  if (config.nodeEnv == "deployment"){
+    transporter.sendMail(mailOption);
+  }
 
   res.status(err.status || 500).send({ error: RM.INTERNAL_SERVER_ERROR });
 });
