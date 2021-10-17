@@ -7,6 +7,7 @@ const RM = {
     INVALID_LOGIN_REQUEST : "Invalid Access Token or Social",
     INVALID_TOKEN : "Token is not valid",
     NO_TOKEN : "No token",
+    NO_CODE_STATE : "No code or state",
 
     NO_CONTENTS : "The required information is missing.",
 

@@ -96,6 +96,13 @@ class UserService {
   }
 
   async naverLogin(code, state){
+    
+    if (!code || !state) {
+      return {
+        statusCode: SC.UNAUTHORIZED,
+        json: { error: RM.NO_CODE_STATE },
+      };
+    }
 
     const response = await axios({
       method: "GET",
@@ -115,7 +122,7 @@ class UserService {
         json: { error: response.data.error_description }
       }
     }
-    
+
     const access_token = response.data.access_token;
     const data = await this.signIn(access_token, "naver");
     return data
