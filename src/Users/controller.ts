@@ -27,8 +27,8 @@ class UserController {
   }
 
   async naverLogin(req: Request, res: Response, next) {
-    const { code, state } = req.query;
-
+    const { code, state } = req.body;
+    
     UserService.naverLogin(code, state)
     .then((result) => {
       res.status(result.statusCode).send(result.json);
