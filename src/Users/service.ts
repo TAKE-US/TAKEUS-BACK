@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 
 import config from "../config";
+import { next } from "cheerio/lib/api/traversing";
 
 const requestSocialLogin = async (token, social) => {
   const urlHash = {
@@ -95,6 +96,14 @@ class UserService {
   }
 
   async naverLogin(code, state){
+    
+    if (!code || !state) {
+      return {
+        statusCode: SC.UNAUTHORIZED,
+        json: { error: RM.NO_CODE_STATE },
+      };
+    }
+
     const response = await axios({
       method: "GET",
       url: "https://nid.naver.com/oauth2.0/token",
@@ -103,10 +112,17 @@ class UserService {
         "client_id" : config.client_id,
         "client_secret" : config.client_secret,
         "code" : code,
-        "state" : state,
-        "redirect_uri" : "http://localhost:5000/api/users/naverLoginRedirect"
+        "state" : state
       }
     });
+
+    if (response.data.error) {
+      return {
+        statusCode: SC.BAD_REQUEST,
+        json: { error: response.data.error_description }
+      }
+    }
+
     const access_token = response.data.access_token;
     const data = await this.signIn(access_token, "naver");
     return data
