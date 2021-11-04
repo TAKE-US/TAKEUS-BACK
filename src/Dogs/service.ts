@@ -160,7 +160,7 @@ class DogService {
   }
 
   async delete(user, dogId) {
-    let dog = await Dog.findOne({ _id: dogId });
+    let dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
     
     if (!dog) {
       return { statusCode: SC.NOT_FOUND, json: { error: RM.DOG_NOT_FOUND } };
