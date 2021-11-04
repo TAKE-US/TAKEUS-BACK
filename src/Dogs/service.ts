@@ -31,8 +31,14 @@ class DogService {
     }
 
     if (user) {
-      const isReport = await Report.findOne({ targetDog: dogId, reportUser : user.id });
-      return { statusCode: SC.SUCCESS, json: { data: dog, isReport: Boolean(isReport) }};
+      const isReport = await Report.findOne({
+        targetDog: dogId,
+        reportUser: user.id,
+      });
+      return {
+        statusCode: SC.SUCCESS,
+        json: { data: dog, isReport: Boolean(isReport) },
+      };
     }
 
     return { statusCode: SC.SUCCESS, json: { data: dog } };
@@ -159,13 +165,35 @@ class DogService {
     return { statusCode: SC.SUCCESS, json: { data: dog } };
   }
 
-  async delete(user, dogId) {
+  async updateAttribute(dogId, body) {
     let dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
-    
+    const user = body.user;
+
     if (!dog) {
       return { statusCode: SC.NOT_FOUND, json: { error: RM.DOG_NOT_FOUND } };
     }
-    
+
+    const owner = dog.user;
+    if (user.id != owner) {
+      return { statusCode: SC.FORBIDDEN, json: { error: RM.NO_AUTHENTICATED } };
+    }
+
+    for (let key in body) {
+      if (key == "user") continue;
+      dog[key] = body[key];
+    }
+
+    await dog.save();
+    return { statusCode: SC.SUCCESS, json: { data: dog } };
+  }
+
+  async delete(user, dogId) {
+    let dog = await Dog.findOne({ _id: dogId, status: { $ne: "deleted" } });
+
+    if (!dog) {
+      return { statusCode: SC.NOT_FOUND, json: { error: RM.DOG_NOT_FOUND } };
+    }
+
     const owner = dog.user;
 
     if (user.id != owner) {
@@ -220,10 +248,9 @@ class DogService {
   }
 
   async searchDeleted() {
-
     const dogs = await Dog.find({
-      status: "deleted"
-    })
+      status: "deleted",
+    });
 
     const totalNum = await Dog.countDocuments({
       status: "deleted",

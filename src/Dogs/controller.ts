@@ -2,8 +2,6 @@ import { Router, Request, Response } from "express";
 import DogService from "./service";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
-import { nextTick } from "process";
-import { next } from "cheerio/lib/api/traversing";
 
 class DogController {
   async readAll(req: Request, res: Response, next) {
@@ -181,6 +179,19 @@ class DogController {
     }
 
     DogService.updateStatus(user, dogId, status)
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
+
+  async updateAttribute(req: Request, res: Response, next) {
+    const dogId = req.params.dogId;
+    const body = req.body;
+
+    DogService.updateAttribute(dogId, body)
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })
