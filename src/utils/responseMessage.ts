@@ -22,6 +22,7 @@ const RM = {
 
     NO_EMAIL_AGREEMENT : "Can't find email. Please check if you have agreed to the email",
 
+    INVALID_CONTENT_TYPE : "request header's content-type is not multipart/form-data"
 };
 
 export { RM };
