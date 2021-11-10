@@ -19,6 +19,8 @@ router.post("/",auth,imageUpload,DogController.create);
 router.put("/detail/:dogId/status",auth,DogController.updateStatus);
 router.put("/detail/:dogId",auth,imageUpload,DogController.update);
 
+router.patch("/detail/:dogId", auth, imageUpload, DogController.updateAttribute);
+
 router.delete("/detail/:dogId",auth,DogController.delete);
 
 module.exports = router;
