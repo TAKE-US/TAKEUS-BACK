@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import DogService from "./service";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
+import { IDogUpdateDTO } from "../interfaces/IDog";
 
 class DogController {
   async readAll(req: Request, res: Response, next) {
@@ -191,7 +192,9 @@ class DogController {
     const dogId = req.params.dogId;
     const body = req.body;
 
-    DogService.updateAttribute(dogId, body)
+    const dogDTO:IDogUpdateDTO = req.body;
+    
+    DogService.updateAttribute(dogId, dogDTO)
       .then((result) => {
         res.status(result.statusCode).send(result.json);
       })

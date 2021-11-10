@@ -180,6 +180,26 @@ class DogService {
 
     for (let key in body) {
       if (key == "user") continue;
+
+      if (key == "photo_link") {
+        console.log(body[key]);
+        console.log(typeof(body[key]));
+        if (body[key] == "") 
+          dog['photos'] = [];
+        else
+          dog['photos'] = body[key];
+        console.log(dog['photos']);
+        continue;
+      }
+
+      if (key == "photos") {
+        for(let link of body[key]){
+          if (link != "")
+            dog['photos'].push(link);
+        }
+        continue;
+      }
+
       dog[key] = body[key];
     }
 
