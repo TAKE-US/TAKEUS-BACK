@@ -21,6 +21,11 @@ const upload = multer({
 export default (req, res, next) => {
   const user = req.body.user;
 
+  if (req.headers["content-type"].split(";")[0] != "multipart/form-data") {
+    res.status(SC.BAD_REQUEST).send({ error: RM.INVALID_CONTENT_TYPE });
+    return;
+  }
+
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       // file too large
@@ -43,27 +48,35 @@ export default (req, res, next) => {
         });
       }
 
-      const formData = {
-        photos: photos,
-      };
+      if (Array.isArray(photos) && photos.length != 0) {
+        const formData = {
+          photos: photos,
+        };
 
-      request.post(
-        { url: URL, formData: formData },
-        (err, httpResponse, body) => {
-          try {
-            if (!body) {
-              throw new Error(RM.FAIL_TO_IMAGE_UPLOAD);
+        request.post(
+          { url: URL, formData: formData },
+          (err, httpResponse, body) => {
+            try {
+              if (!body) {
+                throw new Error(RM.FAIL_TO_IMAGE_UPLOAD);
+              }
+              const data = JSON.parse(body);
+
+              if (Array.isArray(data.data) && data.data.length != 0) {
+                req.body.photos = data.data;
+              }
+
+              next();
+            } catch (error) {
+              console.error(err.message);
+              console.log(err);
+              next(err);
             }
-            const data = JSON.parse(body);
-            req.body.photos = data.data;
-            next();
-          } catch (error) {
-            console.error(err.message);
-            console.log(err);
-            next(err);
           }
-        }
-      );
+        );
+      } else {
+        next();
+      }
     }
   });
 };
