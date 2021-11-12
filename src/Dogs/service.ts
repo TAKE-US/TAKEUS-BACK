@@ -182,13 +182,10 @@ class DogService {
       if (key == "user") continue;
 
       if (key == "photo_link") {
-        console.log(body[key]);
-        console.log(typeof(body[key]));
         if (body[key] == "") 
           dog['photos'] = [];
         else
           dog['photos'] = body[key];
-        console.log(dog['photos']);
         continue;
       }
 

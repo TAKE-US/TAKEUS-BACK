@@ -21,7 +21,12 @@ const upload = multer({
 export default (req, res, next) => {
   const user = req.body.user;
 
-  if (req.headers["content-type"].split(";")[0] != "multipart/form-data") {
+  try{
+    if (req.headers["content-type"].split(";")[0] != "multipart/form-data") {
+      res.status(SC.BAD_REQUEST).send({ error: RM.INVALID_CONTENT_TYPE });
+      return;
+    }
+  } catch {
     res.status(SC.BAD_REQUEST).send({ error: RM.INVALID_CONTENT_TYPE });
     return;
   }

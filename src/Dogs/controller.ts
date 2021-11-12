@@ -190,7 +190,6 @@ class DogController {
 
   async updateAttribute(req: Request, res: Response, next) {
     const dogId = req.params.dogId;
-    const body = req.body;
 
     const dogDTO:IDogUpdateDTO = req.body;
     
