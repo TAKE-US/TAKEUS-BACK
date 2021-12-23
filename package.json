@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --config nodemon.json src/index.ts",
-    "build": "tsc && node dist"
+    "build": "tsc && node dist",
+    "test": "jest --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -43,7 +44,15 @@
     "yarn": "^1.22.10"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-typescript": "^7.16.5",
+    "@types/jest": "^27.0.3",
     "@types/node": "^16.3.1",
+    "@types/supertest": "^2.0.11",
+    "babel-jest": "^27.4.5",
+    "jest": "^27.4.5",
+    "supertest": "^6.1.6",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5"
   }
