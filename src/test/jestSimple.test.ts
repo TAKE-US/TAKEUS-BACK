@@ -1,14 +1,14 @@
-import request from 'supertest'
-import app from '../index'
-
-describe ('', async ()=>{
-  const response = await request(app).get('/api/dogs');
-
+describe ('간단한 테스트', ()=>{
+  
   beforeAll(async()=>{
 
   });
 
+  test("간단한 세부 테스트", async()=>{
+    expect(100+100).toBe(200);
+  });
+
   afterAll(async()=>{
 
-  })
-})
+  });
+});

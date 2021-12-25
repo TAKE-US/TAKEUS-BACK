@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --config nodemon.json src/index.ts",
     "build": "tsc && node dist",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "repository": {
     "type": "git",
