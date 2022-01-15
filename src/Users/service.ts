@@ -6,7 +6,9 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 
 import config from "../config";
-import { next } from "cheerio/lib/api/traversing";
+
+const ONE_HOUR = 36000;
+const TWO_WEEK = ONE_HOUR * 24 * 14;
 
 const requestSocialLogin = async (token, social) => {
   const urlHash = {
@@ -48,7 +50,7 @@ class UserService {
 
     let email;
     let response = await requestSocialLogin(token, social);
-    
+
     if (!response) {
       return {
         statusCode: SC.BAD_REQUEST,
@@ -91,12 +93,26 @@ class UserService {
       },
     };
 
-    const jwtToken = jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 });
-    return { statusCode: SC.SUCCESS, json: { token: jwtToken, id: user.id, email: user.email } };
+    const accessToken = jwt.sign(payload, config.jwtSecret, {
+      expiresIn: ONE_HOUR,
+    });
+    const refreshToken = jwt.sign(payload, config.jwtSecret, {
+      expiresIn: TWO_WEEK,
+    });
+
+    return {
+      statusCode: SC.SUCCESS,
+      json: {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        id: user.id,
+        email: user.email,
+        issuedAt : Math.floor(+ new Date() / 1000)
+      },
+    };
   }
 
-  async naverLogin(code, state){
-    
+  async naverLogin(code, state) {
     if (!code || !state) {
       return {
         statusCode: SC.UNAUTHORIZED,
@@ -108,24 +124,62 @@ class UserService {
       method: "GET",
       url: "https://nid.naver.com/oauth2.0/token",
       params: {
-        "grant_type" : "authorization_code",
-        "client_id" : config.client_id,
-        "client_secret" : config.client_secret,
-        "code" : code,
-        "state" : state
-      }
+        grant_type: "authorization_code",
+        client_id: config.client_id,
+        client_secret: config.client_secret,
+        code: code,
+        state: state
+      },
     });
 
     if (response.data.error) {
       return {
         statusCode: SC.BAD_REQUEST,
-        json: { error: response.data.error_description }
-      }
+        json: { error: response.data.error_description },
+      };
     }
 
     const access_token = response.data.access_token;
     const data = await this.signIn(access_token, "naver");
-    return data
+    return data;
+  }
+
+  async getAccessToken(refreshToken) {
+    let decoded;
+    // Check if not token
+    if (!refreshToken) {
+      return {
+        statusCode: SC.UNAUTHORIZED,
+        json: { error: RM.INVALID_TOKEN },
+      };
+    }
+
+    try {
+      decoded = jwt.verify(refreshToken, config.jwtSecret);
+    } catch (err) {
+      return {
+        statusCode: SC.UNAUTHORIZED,
+        json: { error: RM.INVALID_TOKEN },
+      };
+    }
+
+    const payload = {
+      user: {
+        id: decoded.user.id,
+      },
+    };
+
+    const accessToken = jwt.sign(payload, config.jwtSecret, {
+      expiresIn: ONE_HOUR,
+    });
+
+    return {
+      statusCode: SC.SUCCESS,
+      json: {
+        accessToken: accessToken,
+        isseudAt: Math.floor(+ new Date() / 1000)
+      },
+    };
   }
 }
 
