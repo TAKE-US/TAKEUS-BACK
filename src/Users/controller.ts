@@ -28,14 +28,26 @@ class UserController {
 
   async naverLogin(req: Request, res: Response, next) {
     const { code, state } = req.body;
-    
+
     UserService.naverLogin(code, state)
-    .then((result) => {
-      res.status(result.statusCode).send(result.json);
-    })
-    .catch((err) => {
-      next(err);
-    });
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
+
+  async getAccessToken(req: Request, res: Response, next) {
+    const refreshToken = req.header("refresh-token");
+
+    UserService.getAccessToken(refreshToken)
+      .then((result) => {
+        res.status(result.statusCode).send(result.json);
+      })
+      .catch((err) => {
+        next(err);
+      });
   }
 }
 
