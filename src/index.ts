@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 
-import connectDB from "./Loader/db";
+import db from "./Loader/db";
 import config from "./config";
 import requestLog from "./middleware/logger";
 import { logger } from "./Logger/logger";
@@ -20,7 +20,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Connect Database
-connectDB();
+db.connectDB();
 
 app.use(express.urlencoded());
 app.use(express.json());
@@ -49,7 +49,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500).send({ error: RM.INTERNAL_SERVER_ERROR });
 });
 
-app
+const server = app
   .listen(config.port, () => {
     console.log(`
     ################################################
@@ -62,4 +62,4 @@ app
     process.exit(1);
   });
 
-export default app;
+export default { app, server };
