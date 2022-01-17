@@ -104,5 +104,4 @@ dist
 .tern-port
 
 uploads/
-test/
 src/utils/dummyData/
