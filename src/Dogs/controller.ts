@@ -66,7 +66,6 @@ class DogController {
       !neutralization ||
       !health ||
       !isInstitution ||
-      !institutionName ||
       !user
     ) {
       res.status(SC.BAD_REQUEST).send({ error: RM.NULL_VALUE });
