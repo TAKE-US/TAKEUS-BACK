@@ -102,9 +102,9 @@ class UserService {
 
     return {
       statusCode: SC.SUCCESS,
+      refreshToken : refreshToken,
       json: {
         accessToken: accessToken,
-        refreshToken: refreshToken,
         id: user.id,
         email: user.email,
         issuedAt : Math.floor(+ new Date() / 1000)

@@ -42,7 +42,7 @@ app.use(function (err, req, res, next) {
     text : err.message
   };
 
-  if (config.nodeEnv == "deployment"){
+  if (config.nodeEnv == "production"){
     transporter.sendMail(mailOption);
   }
 
