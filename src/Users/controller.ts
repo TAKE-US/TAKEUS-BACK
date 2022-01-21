@@ -23,7 +23,7 @@ class UserController {
       .then((result) => {
         let refreshTokenCookie = `yummy_cookie=${result.refreshToken}; HttpOnly`;
 
-        if (config.nodeEnv == "deployment") {
+        if (config.nodeEnv == "production") {
           refreshTokenCookie = refreshTokenCookie + `; Secure`;
         }
         res.setHeader("Set-Cookie", [refreshTokenCookie]).send(result.json);
