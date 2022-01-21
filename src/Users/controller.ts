@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import UserService from "./service";
+import cookie from "cookie";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
@@ -19,7 +20,11 @@ class UserController {
 
     UserService.signIn(token, social)
       .then((result) => {
-        res.status(result.statusCode).send(result.json);
+        res
+          .setHeader("Set-Cookie", [
+            `yummy_cookie=${result.refreshToken}; HttpOnly`,
+          ])
+          .send(result.json);
       })
       .catch((err) => {
         next(err);
@@ -39,7 +44,11 @@ class UserController {
   }
 
   async getAccessToken(req: Request, res: Response, next) {
-    const refreshToken = req.header("refresh-token");
+    let refreshToken = null;
+
+    try {
+      refreshToken = cookie.parse(req.headers.cookie).yummy_cookie;
+    } catch (error) {}
 
     UserService.getAccessToken(refreshToken)
       .then((result) => {
