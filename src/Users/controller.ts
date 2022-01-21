@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserService from "./service";
 import cookie from "cookie";
+import config from "../config";
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
@@ -20,11 +21,12 @@ class UserController {
 
     UserService.signIn(token, social)
       .then((result) => {
-        res
-          .setHeader("Set-Cookie", [
-            `yummy_cookie=${result.refreshToken}; HttpOnly`,
-          ])
-          .send(result.json);
+        let refreshTokenCookie = `yummy_cookie=${result.refreshToken}; HttpOnly`;
+
+        if (config.nodeEnv == "deployment") {
+          refreshTokenCookie = refreshTokenCookie + `; Secure`;
+        }
+        res.setHeader("Set-Cookie", [refreshTokenCookie]).send(result.json);
       })
       .catch((err) => {
         next(err);
