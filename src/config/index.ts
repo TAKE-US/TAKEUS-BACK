@@ -40,4 +40,8 @@ export default {
   client_id : process.env.NAVER_CLIENT_ID,
   client_secret : process.env.NAVER_CLIENT_SECRET,
 
+  /**
+   * slack channel
+   */
+  slackChannel : process.env.SLACK_CHANNEL
 };
