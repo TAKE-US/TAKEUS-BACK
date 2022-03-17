@@ -47,7 +47,12 @@ class ReviewController {
   }
 
   async filter(req: Request, res: Response, next) {
-    const { order = "latest", hashtags, page = 1, postNumInPage = 7 } = req.query;
+    const {
+      order = "latest",
+      hashtags,
+      page = 1,
+      postNumInPage = 7,
+    } = req.query;
     const endingAirport = req.params.endingAirport;
 
     ReviewService.filter(order, hashtags, page, postNumInPage, endingAirport)
@@ -89,8 +94,6 @@ class ReviewController {
       !endingCountry ||
       !endingAirport ||
       !hashtags ||
-      !isInstitution ||
-      !institutionName ||
       !content ||
       !user
     ) {
@@ -127,7 +130,7 @@ class ReviewController {
       isInstitution,
       institutionName,
       content,
-      user
+      user,
     } = req.body;
 
     if (
