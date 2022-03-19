@@ -193,6 +193,9 @@ class ReviewService {
       return { statusCode: SC.FORBIDDEN, json: { error: RM.NO_AUTHENTICATED } };
     }
 
+    review.isInstitution = "";
+    review.institutionName = "";
+
     const add = {
       link: null,
       desc: null,
@@ -222,6 +225,12 @@ class ReviewService {
           (add.desc = $(this)
             .find('meta[property="og:description"]')
             .attr("content"));
+
+        if (!add.image)
+          add.image =
+            "https://takeus-bucket.s3.ap-northeast-2.amazonaws.com/image/dogs/%ED%9B%84%EA%B8%B0+%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
+
+        if (!add.desc) add.desc = "클릭하여 내용을 확인 해 보세요!";
 
         review.crawlingData.splice(0, 1);
         review.crawlingData.unshift(add);

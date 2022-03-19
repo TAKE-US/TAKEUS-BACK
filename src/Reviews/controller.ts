@@ -138,8 +138,6 @@ class ReviewController {
       !endingCountry ||
       !endingAirport ||
       !hashtags ||
-      !isInstitution ||
-      !institutionName ||
       !content ||
       !user
     ) {
