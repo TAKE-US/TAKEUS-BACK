@@ -21,7 +21,10 @@ class ReviewService {
       .limit(limit);
     const totalNum = await Review.countDocuments({});
 
-    return { statusCode: SC.SUCCESS, json: { data: reviews, totalNum: totalNum } };
+    return {
+      statusCode: SC.SUCCESS,
+      json: { data: reviews, totalNum: totalNum },
+    };
   }
 
   async readOne(reviewId) {
@@ -41,10 +44,7 @@ class ReviewService {
     );
 
     const reviews = await Review.find()
-      .or([
-        { endingAirport: keyword },
-        { hashtags: keyword },
-      ])
+      .or([{ endingAirport: keyword }, { hashtags: keyword }])
       .sort({ writeDate: orderHash[order] })
       .skip(skip)
       .limit(limit);
@@ -54,7 +54,10 @@ class ReviewService {
       { hashtags: keyword },
     ]);
 
-    return { statusCode: SC.SUCCESS, json: { data: reviews, totalNum: totalNum } };
+    return {
+      statusCode: SC.SUCCESS,
+      json: { data: reviews, totalNum: totalNum },
+    };
   }
 
   async filter(order, hashtags, page, postNumInPage, endingAirport) {
@@ -67,16 +70,19 @@ class ReviewService {
       endingAirport: endingAirport,
       hashtags: hashtags,
     })
-    .sort({ writeDate: orderHash[order] })
-    .skip(skip)
-    .limit(limit);
+      .sort({ writeDate: orderHash[order] })
+      .skip(skip)
+      .limit(limit);
 
     const totalNum = await Review.countDocuments({
       endingAirport: endingAirport,
       hashtags: hashtags,
     });
 
-    return { statusCode: SC.SUCCESS, json: { data: reviews, totalNum: totalNum } };
+    return {
+      statusCode: SC.SUCCESS,
+      json: { data: reviews, totalNum: totalNum },
+    };
   }
 
   async findMy(order, page, postNumInPage, userId) {
@@ -96,7 +102,10 @@ class ReviewService {
       user: userId,
     });
 
-    return { statusCode: SC.SUCCESS, json: { data: reviews, totalNum: totalNum } };
+    return {
+      statusCode: SC.SUCCESS,
+      json: { data: reviews, totalNum: totalNum },
+    };
   }
 
   async create({
@@ -114,7 +123,7 @@ class ReviewService {
       desc: null,
       image: null,
     };
-    
+
     // Build review object
     let reviewFields: IReviewInputDTO = {
       user: user.id,
@@ -126,7 +135,7 @@ class ReviewService {
     if (institutionName) reviewFields.institutionName = institutionName;
     if (hashtags) reviewFields.hashtags = hashtags;
     if (content) reviewFields.content = content;
-  
+
     // Build crawlingData object
     if (add.link) reviewFields.crawlingData.link = add.link;
     if (add.image) reviewFields.crawlingData.image = add.image;
@@ -135,24 +144,28 @@ class ReviewService {
     // Create
     let review = new Review(reviewFields);
     // Crawling
-    axios
-      .get(content)
-      .then((html) => {
-        const $ = cheerio.load(html.data);
-        const $bodyList = $("head");
-        $bodyList.each(function (i, elem) {
-          (add.link = $(this).find('meta[property="og:url"]').attr("content")),
-            (add.image = $(this)
-              .find('meta[property="og:image"]')
-              .attr("content")),
-            (add.desc = $(this)
-              .find('meta[property="og:description"]')
-              .attr("content"));
+    axios.get(content).then((html) => {
+      const $ = cheerio.load(html.data);
+      const $bodyList = $("head");
+      $bodyList.each(function (i, elem) {
+        (add.link = $(this).find('meta[property="og:url"]').attr("content")),
+          (add.image = $(this)
+            .find('meta[property="og:image"]')
+            .attr("content")),
+          (add.desc = $(this)
+            .find('meta[property="og:description"]')
+            .attr("content"));
 
-          review.crawlingData.unshift(add);
-          review.save();
-        });
-      })
+        if (!add.image)
+          add.image =
+            "https://takeus-bucket.s3.ap-northeast-2.amazonaws.com/image/dogs/%ED%9B%84%EA%B8%B0+%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
+
+        if (!add.desc) add.desc = "클릭하여 내용을 확인 해 보세요!";
+
+        review.crawlingData.unshift(add);
+        review.save();
+      });
+    });
 
     return { statusCode: SC.SUCCESS, json: { data: review } };
   }
@@ -179,7 +192,10 @@ class ReviewService {
     if (user.id != owner) {
       return { statusCode: SC.FORBIDDEN, json: { error: RM.NO_AUTHENTICATED } };
     }
-    
+
+    review.isInstitution = "";
+    review.institutionName = "";
+
     const add = {
       link: null,
       desc: null,
@@ -198,36 +214,40 @@ class ReviewService {
     await review.save();
 
     // Crawling
-    axios
-      .get(content)
-      .then((html) => {
-        const $ = cheerio.load(html.data);
-        const $bodyList = $("head");
-        $bodyList.each(function (i, elem) {
-          (add.link = $(this).find('meta[property="og:url"]').attr("content")),
-            (add.image = $(this)
-              .find('meta[property="og:image"]')
-              .attr("content")),
-            (add.desc = $(this)
-              .find('meta[property="og:description"]')
-              .attr("content"));
+    axios.get(content).then((html) => {
+      const $ = cheerio.load(html.data);
+      const $bodyList = $("head");
+      $bodyList.each(function (i, elem) {
+        (add.link = $(this).find('meta[property="og:url"]').attr("content")),
+          (add.image = $(this)
+            .find('meta[property="og:image"]')
+            .attr("content")),
+          (add.desc = $(this)
+            .find('meta[property="og:description"]')
+            .attr("content"));
 
-          review.crawlingData.splice(0, 1);
-          review.crawlingData.unshift(add);
-          review.save();
-        });
-      })
+        if (!add.image)
+          add.image =
+            "https://takeus-bucket.s3.ap-northeast-2.amazonaws.com/image/dogs/%ED%9B%84%EA%B8%B0+%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
+
+        if (!add.desc) add.desc = "클릭하여 내용을 확인 해 보세요!";
+
+        review.crawlingData.splice(0, 1);
+        review.crawlingData.unshift(add);
+        review.save();
+      });
+    });
 
     return { statusCode: SC.SUCCESS, json: { data: review } };
   }
 
   async delete(user, reviewId) {
     let review = await Review.findOne({ _id: reviewId });
-    
+
     if (!review) {
       return { statusCode: SC.NOT_FOUND, json: { error: RM.REVIEW_NOT_FOUND } };
     }
-    
+
     const owner = review.user;
 
     if (user.id != owner) {
