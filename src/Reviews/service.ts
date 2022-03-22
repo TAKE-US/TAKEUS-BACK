@@ -141,8 +141,6 @@ class ReviewService {
     if (add.image) reviewFields.crawlingData.image = add.image;
     if (add.desc) reviewFields.crawlingData.desc = add.desc;
 
-    // Create
-    let review = new Review(reviewFields);
     // Crawling
     axios.get(content).then((html) => {
       const $ = cheerio.load(html.data);
@@ -155,17 +153,21 @@ class ReviewService {
           (add.desc = $(this)
             .find('meta[property="og:description"]')
             .attr("content"));
-
-        if (!add.image)
-          add.image =
-            "https://takeus-bucket.s3.ap-northeast-2.amazonaws.com/image/dogs/%ED%9B%84%EA%B8%B0+%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
-
-        if (!add.desc) add.desc = "클릭하여 내용을 확인 해 보세요!";
-
-        review.crawlingData.unshift(add);
-        review.save();
       });
     });
+
+    if (!add.link) add.link = content;
+
+    if (!add.image)
+      add.image =
+        "https://takeus-bucket.s3.ap-northeast-2.amazonaws.com/image/dogs/%ED%9B%84%EA%B8%B0+%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
+
+    if (!add.desc) add.desc = "클릭하여 내용을 확인 해 보세요!";
+
+    // Create
+    let review = new Review(reviewFields);
+    review.crawlingData.unshift(add);
+    review.save();
 
     return { statusCode: SC.SUCCESS, json: { data: review } };
   }
