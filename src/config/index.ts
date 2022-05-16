@@ -1,9 +1,12 @@
 import dotenv from "dotenv";
 
-const envFound = dotenv.config();
+if (process.env.NODE_ENV === "local") {
+  const envFound = dotenv.config();
 if (envFound.error) {
   throw new Error("⚠️  Couldn't find .env file  ⚠️");
 }
+}
+
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
