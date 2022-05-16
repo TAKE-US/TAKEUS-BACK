@@ -27,7 +27,7 @@ phases:
       # name: version
       # name: version
     commands:
-      - npm ci
+      - npm install
       # - command
   #pre_build:
     #commands:
