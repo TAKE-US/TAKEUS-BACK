@@ -2,11 +2,10 @@ import dotenv from "dotenv";
 
 if (process.env.NODE_ENV === "local") {
   const envFound = dotenv.config();
-if (envFound.error) {
-  throw new Error("⚠️  Couldn't find .env file  ⚠️");
+  if (envFound.error) {
+    throw new Error("⚠️  Couldn't find .env file  ⚠️");
+  }
 }
-}
-
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
@@ -40,11 +39,17 @@ export default {
   /**
    * naver client id, secret
    */
-  client_id : process.env.NAVER_CLIENT_ID,
-  client_secret : process.env.NAVER_CLIENT_SECRET,
+  client_id: process.env.NAVER_CLIENT_ID,
+  client_secret: process.env.NAVER_CLIENT_SECRET,
 
   /**
    * slack channel
    */
-  slackChannel : process.env.SLACK_CHANNEL
+  slackChannel: process.env.SLACK_CHANNEL,
+
+  /**
+   * aws access key for image upload to s3
+   */
+  awsAccessKey: process.env.AWS_ACCESS_KEY,
+  awsPrivateAccessKey: process.env.AWS_PRIVATE_ACCESS_KEY,
 };
