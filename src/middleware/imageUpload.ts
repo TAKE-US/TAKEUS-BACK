@@ -1,15 +1,19 @@
 import fs from "fs";
-import request from "request";
 import config from "../config";
 import multer from "multer";
 import { imageFilter } from "../utils/filter";
+import aws from "aws-sdk";
 
 import { SC } from "../utils/statusCode";
 import { RM } from "../utils/responseMessage";
 
 const URL = config.fileUploadServerUrl;
+aws.config.update({
+  accessKeyId: config.awsAccessKey,
+  secretAccessKey: config.awsPrivateAccessKey,
+  region: "ap-northeast-2",
+});
 
-// things for file upload.
 const UPLOAD_PATH = "uploads";
 
 const upload = multer({
@@ -18,10 +22,47 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 15 },
 }).array("photos", 5);
 
+const s3 = new aws.S3();
+
+function asyncUpload(req, file) {
+  return new Promise((resolve, reject) => {
+    const params = {
+      ACL: "public-read",
+      Bucket: "takeus-bucket",
+      Body: fs.createReadStream(file.path),
+      Key: `image/dogs/${file.originalname}`,
+    };
+
+    s3.upload(params, (err, data) => {
+      if (err) {
+        console.log("Error occured while trying to upload to S3 bucket", err);
+        reject();
+      }
+
+      if (data) {
+        const imageLink = data.Location;
+        req.body.photos.push(imageLink);
+        resolve(imageLink);
+      }
+    });
+  });
+}
+
+async function uploadParallel(req, next) {
+  if (!req.files) {
+    console.log("empty files");
+    return next();
+  }
+
+  const promises = req.files.map((file) => asyncUpload(req, file));
+  await Promise.all(promises);
+  next();
+}
+
 export default (req, res, next) => {
   const user = req.body.user;
 
-  try{
+  try {
     if (req.headers["content-type"].split(";")[0] != "multipart/form-data") {
       res.status(SC.BAD_REQUEST).send({ error: RM.INVALID_CONTENT_TYPE });
       return;
@@ -41,47 +82,8 @@ export default (req, res, next) => {
     } else {
       req.body.user = user;
 
-      let photos = [];
-
-      for (let file of req.files) {
-        photos.push({
-          value: fs.createReadStream(file.path),
-          options: {
-            filename: file.originalname,
-            contentType: file.mimetype,
-          },
-        });
-      }
-
-      if (Array.isArray(photos) && photos.length != 0) {
-        const formData = {
-          photos: photos,
-        };
-
-        request.post(
-          { url: URL, formData: formData },
-          (err, httpResponse, body) => {
-            try {
-              if (!body) {
-                throw new Error(RM.FAIL_TO_IMAGE_UPLOAD);
-              }
-              const data = JSON.parse(body);
-
-              if (Array.isArray(data.data) && data.data.length != 0) {
-                req.body.photos = data.data;
-              }
-
-              next();
-            } catch (error) {
-              console.error(err.message);
-              console.log(err);
-              next(err);
-            }
-          }
-        );
-      } else {
-        next();
-      }
+      req.body.photos = [];
+      uploadParallel(req, next);
     }
   });
 };
