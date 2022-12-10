@@ -162,6 +162,3 @@ if (foo) {
 |:---:|:---------:|
 | <img src="https://user-images.githubusercontent.com/68781598/124697830-78975d80-df22-11eb-9300-63366ede33b0.png" width="200px" />  | <img src="https://user-images.githubusercontent.com/68781598/124511973-4d254d80-de12-11eb-96b8-60741367d22a.png" width="200px" />  |
 | [qkrwjdan](https://github.com/qkrwjdan) | [kanghanhee](https://github.com/kanghanhee) |
-
-
-파이프라인 테스트
